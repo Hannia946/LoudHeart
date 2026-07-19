@@ -1,0 +1,25 @@
+/[L|l]ibrary/
+/[T|t]emp/
+/[O|o]bj/
+/[B|b]uild/
+/[B|b]uilds/
+/[L|l]ogs/
+/[U|u]ser[D|d]ata/
+/[M|m]emoryCaptures/
+
+# Archivos de soluciones de Visual Studio / Rider
+/*.sln
+/*.csproj
+/*.unityproj
+/*.suo
+/*.user
+/*.userprefs
+/*.pidb
+/*.ipch
+/*.rgwb
+/*.VC.db
+/*.opendb
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
