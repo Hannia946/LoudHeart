@@ -6,6 +6,7 @@
 /[L|l]ogs/
 /[U|u]ser[D|d]ata/
 /[M|m]emoryCaptures/
+/UserSettings/
 
 # Archivos de soluciones de Visual Studio / Rider
 /*.sln
@@ -19,6 +20,7 @@
 /*.rgwb
 /*.VC.db
 /*.opendb
+.vscode/
 
 # Archivos del sistema operativo
 .DS_Store
