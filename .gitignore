@@ -20,7 +20,7 @@
 /*.rgwb
 /*.VC.db
 /*.opendb
-.vscode/
+
 
 # Archivos del sistema operativo
 .DS_Store
