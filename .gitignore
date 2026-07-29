@@ -12,6 +12,7 @@ LightingData.asset
 LightmapSnapshot/
 
 # Archivos de soluciones de Visual Studio / Rider
+/.vs/
 /*.sln
 /*.csproj
 /*.unityproj
