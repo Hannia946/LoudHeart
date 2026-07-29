@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerHeadController : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class PlayerHeadController : MonoBehaviour
     //MÉTODO QUE SE CONECTA A UN BOTÓN DE LA UI
     public void CalibrarCentro()
     {
+     
+
         if (proveedorDatos != null)
         {
             offsetYaw = proveedorDatos.rawYaw;
@@ -30,6 +33,11 @@ public class PlayerHeadController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            CalibrarCentro();
+        }
+
         if (!estaCalibrado || proveedorDatos == null) return;
 
         // 1. Restamos el offset para encontrar el centro real del jugador

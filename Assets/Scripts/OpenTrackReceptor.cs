@@ -10,7 +10,7 @@ public class OpenTrackReceptor : MonoBehaviour
     private UdpClient udpClient;
     private Thread receiveThread;
     private bool isRunning;
-    private int listenPort = 5050; // Puerto de OpenTrack
+    private int listenPort = 5555; // Puerto de OpenTrack
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,24 +24,32 @@ public class OpenTrackReceptor : MonoBehaviour
 
     private void ReceiveData()
     {
-        udpClient = new UdpClient(listenPort);
-        IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, listenPort);
-
-        while (isRunning)
+        try
         {
-            try
+            // Permite reutilizar el puerto sin que Windows lance la SocketException
+            udpClient = new UdpClient();
+            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, listenPort));
+
+            IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, listenPort);
+
+            while (isRunning)
             {
                 byte[] data = udpClient.Receive(ref anyIP);
                 if (data.Length >= 48)
                 {
-                    // OpenTrack envía double de 8 bytes. Yaw = byte 24, Pitch = byte 32.
                     rawYaw = (float)System.BitConverter.ToDouble(data, 24);
                     rawPitch = (float)System.BitConverter.ToDouble(data, 32);
                 }
             }
-            catch { /* Ignorar errores de red temporales */ }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("Estado del puerto UDP: " + e.Message);
         }
     }
+
+
 
     void OnApplicationQuit()
     {
