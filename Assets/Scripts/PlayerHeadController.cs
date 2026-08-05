@@ -1,56 +1,81 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerHeadController : MonoBehaviour
 {
-    [Header("Conexión de Datos")]
-    public OpenTrackReceptor proveedorDatos;
+    [Header("Conexión de Datos (Modular)")]
+    
+    public ProveedorHeadTracking proveedorDatos;
 
     [Header("Configuración del Personaje")]
-    public Transform cuelloJugador; // Objeto Cuello
+    public Transform cuerpoJugador;
+    public Transform cuelloJugador;
     [Range(1f, 30f)] public float velocidadSuavizado = 15f;
 
     [Header("Sensibilidad de la Cabeza")]
-    [Tooltip("Aumenta este valor si la cámara gira muy poco en el juego")]
-    public float sensibilidadYaw = 4f;   // Multiplicador horizontal
-    public float sensibilidadPitch = 3f; // Multiplicador vertical
+    public float sensibilidadYaw = 4f;
+    public float sensibilidadPitch = 3f;
 
-    // Variables de Calibración
+    [Header("Mecánicas del GDD")]
+    private bool estaMoviendose = false; // no es pública para evitar errores, se controla por voz
+    public float zonaMuertaParado = 30f;
+    public float zonaMuertaMoviendo = 3f;
+    public float multiplicadorGiroCuerpo = 3f;
+
     private float offsetYaw = 0f;
     private float offsetPitch = 0f;
     public bool estaCalibrado = false;
 
-    [ContextMenu("Calibrar Centro Manual")]
+    // MÉTODOS PARA EL RECONOCIMIENTO DE VOZ
+
+    [ContextMenu("Calibrar Centro")]
     public void CalibrarCentro()
     {
         if (proveedorDatos != null)
         {
-            offsetYaw = proveedorDatos.rawYaw;
-            offsetPitch = proveedorDatos.rawPitch;
+            offsetYaw = proveedorDatos.ObtenerYaw();
+            offsetPitch = proveedorDatos.ObtenerPitch();
             estaCalibrado = true;
-            Debug.Log("¡Calibración exitosa! Ejes centrados.");
+            Debug.Log("Calibración exitosa por comando.");
         }
     }
 
+    // El script de Sentis llamará a esto cuando el jugador diga "Va" o "Corre"
+    public void IniciarMovimiento()
+    {
+        estaMoviendose = true;
+    }
+
+    // El script de Sentis llamará a esto cuando el jugador diga "Alto"
+    public void DetenerMovimiento()
+    {
+        estaMoviendose = false;
+    }
+
+    // LÓGICA DE ROTACIÓN
+
     void Update()
     {
-        // Calibrar al presionar la barra espaciadora
-        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            CalibrarCentro();
-        }
+        // Si no se ha calibrado (ej. al inicio del juego) o faltan referencias, salimos
+        if (!estaCalibrado || proveedorDatos == null || cuelloJugador == null || cuerpoJugador == null) return;
 
-        // Si no se ha calibrado, no hay proveedor o falta asignar el cuello, no hacemos nada
-        if (!estaCalibrado || proveedorDatos == null || cuelloJugador == null) return;
+        // 1. Obtenemos datos de la interfaz, sin importar si es OpenTrack u OpenCV
+        float yawActual = proveedorDatos.ObtenerYaw();
+        float yawFinal = (yawActual - offsetYaw) * sensibilidadYaw;
 
-        // 1. Calculamos la diferencia respecto al centro y la multiplicamos por la sensibilidad
-        float yawFinal = (proveedorDatos.rawYaw - offsetYaw) * sensibilidadYaw;
-        float pitchFinal = (proveedorDatos.rawPitch - offsetPitch) * sensibilidadPitch;
-
-        // 2. Calculamos la rotación objetivo
-        Quaternion rotacionObjetivo = Quaternion.Euler(-pitchFinal, yawFinal, 0f);
-
-        // 3. Aplicamos la rotación suave al cuello
+        // 2. Rotación del Cuello (bloqueando el eje X)
+        Quaternion rotacionObjetivo = Quaternion.Euler(0f, yawFinal, 0f);
         cuelloJugador.localRotation = Quaternion.Slerp(cuelloJugador.localRotation, rotacionObjetivo, Time.deltaTime * velocidadSuavizado);
+
+        // 3. Lógica de Zonas Muertas
+        float zonaMuertaActual = estaMoviendose ? zonaMuertaMoviendo : zonaMuertaParado;
+
+        if (Mathf.Abs(yawFinal) > zonaMuertaActual)
+        {
+            float diferencial = Mathf.Abs(yawFinal) - zonaMuertaActual;
+            float direccion = Mathf.Sign(yawFinal);
+            float cantidadGiroCuerpo = diferencial * multiplicadorGiroCuerpo * direccion * Time.deltaTime;
+
+            cuerpoJugador.Rotate(0f, cantidadGiroCuerpo, 0f);
+        }
     }
 }

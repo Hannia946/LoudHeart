@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-public class OpenTrackReceptor : MonoBehaviour
+public class OpenTrackReceptor : ProveedorHeadTracking
 {
     public float rawYaw { get; private set; }
     public float rawPitch { get; private set; }
@@ -57,5 +57,8 @@ public class OpenTrackReceptor : MonoBehaviour
         if (receiveThread != null) receiveThread.Abort();
         if (udpClient != null) udpClient.Close();
     }
+
+    public override float ObtenerYaw() { return rawYaw; }
+    public override float ObtenerPitch() { return rawPitch; }
 
 }
