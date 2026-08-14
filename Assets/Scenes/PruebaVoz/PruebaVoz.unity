@@ -435,6 +435,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9164049905212967805, guid: 3b8caf1091ae74f42872766ad20bd82a, type: 3}
+      propertyPath: modelAsset
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: aece2883a62e33141b9bbb0bc1e7ec7b, type: 3}
+    - target: {fileID: 9164049905212967805, guid: 3b8caf1091ae74f42872766ad20bd82a, type: 3}
+      propertyPath: umbralVolumen
+      value: 0.08
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

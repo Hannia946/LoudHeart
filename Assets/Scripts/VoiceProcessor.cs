@@ -27,6 +27,9 @@ public class VoiceProcessor : MonoBehaviour
     private Worker worker;
     private float tiempoUltimaPrediccion = 0f;
 
+    // 📡 Evento al que se conectará el personaje o cualquier otro sistema
+    public static event System.Action<string> OnComandoDetectado;
+
     void Start()
     {
         // 1. Cargar modelo en Sentis
@@ -131,6 +134,9 @@ public class VoiceProcessor : MonoBehaviour
 
         // ✅ COMANDO ACEPTADO Y VALIDO
         Debug.Log($"✅ COMANDO DETECTADO: **{comandoDetectado.ToUpper()}** ({maxProb * 100f:F1}% de certeza)");
+
+        // 📢 Emitir el evento a quien esté escuchando
+        OnComandoDetectado?.Invoke(comandoDetectado.ToLower());
     }
 
     void OnDestroy()
