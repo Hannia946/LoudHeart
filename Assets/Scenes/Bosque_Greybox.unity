@@ -3957,10 +3957,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5943604625036903711, guid: 682d8df8af1c49e4ab9063b6f34b2f68, type: 3}
-      propertyPath: nombreObjetoClave
-      value: Bicicleta
-      objectReference: {fileID: 0}
     - target: {fileID: 7738187439172080851, guid: 682d8df8af1c49e4ab9063b6f34b2f68, type: 3}
       propertyPath: m_Name
       value: Bicicleta
@@ -4581,7 +4577,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5999806428120628933, guid: fc856cb7cddf0c24f83c536c04790542, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.557
       objectReference: {fileID: 0}
     - target: {fileID: 5999806428120628933, guid: fc856cb7cddf0c24f83c536c04790542, type: 3}
       propertyPath: m_LocalPosition.z

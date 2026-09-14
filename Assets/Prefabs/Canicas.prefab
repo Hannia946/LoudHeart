@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3465116887178187583}
   - component: {fileID: 1554462035710327429}
   - component: {fileID: 6267728065067278128}
+  - component: {fileID: 1514606137266192182}
   m_Layer: 0
   m_Name: Canicas
   m_TagString: Untagged
@@ -157,3 +158,19 @@ MonoBehaviour:
   idObjeto: 0
   sonidoRecoleccionUnico: {fileID: 0}
   outlineComponent: {fileID: 0}
+--- !u!114 &1514606137266192182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7083628714115117328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa134eb364cbc041ba1a8fa207838ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHighlight
+  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  pulseSpeed: 2
+  minIntensity: 0.2
+  maxIntensity: 2
