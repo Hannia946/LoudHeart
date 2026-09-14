@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8096330262890476624}
   - component: {fileID: 5795516207410854469}
   - component: {fileID: 7879045073432987253}
+  - component: {fileID: 8279623152435780438}
   m_Layer: 0
   m_Name: Consumible_Pila
   m_TagString: Untagged
@@ -68,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18caba7fe3bd12b4a9eebfe9cc3fc466, type: 2}
+  - {fileID: 2100000, guid: 7e4e3eaa64d3b984faef3e181ad049ae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,6 +126,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8b4cb45f1e1e5e4ca8681f0ff9a14d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
-  tipoConsumible: 1
+  tipoConsumible: 3
   cantidad: 1
   sonidoRecoleccion: {fileID: 0}
+--- !u!114 &8279623152435780438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2613582940799487838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcb35881c2872de49a5bbbc48c4a21ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpeedBoostEffect
+  mainCamera: {fileID: 0}
+  screenOverlayCanvasGroup: {fileID: 0}
+  maxOverlayAlpha: 0.35
+  normalFOV: 60
+  boostFOV: 80
+  transitionSpeed: 1.5
+  boostDuration: 5
