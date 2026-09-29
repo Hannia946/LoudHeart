@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7972106266557749506
 Transform:
   m_ObjectHideFlags: 0
@@ -44,5 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9386f771badcf7048a0ebf176fae3495, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VoiceProcessor
-  modelAsset: {fileID: 5022602860645237092, guid: 95e8083f34b0fba409e30a6cf0452562, type: 3}
-  sampleRate: 16000
+  modelAsset: {fileID: 5022602860645237092, guid: e3883e3d828fba64aaaef89e20a18dd8, type: 3}
+  recordingLengthSeconds: 10
+  captureWindowSeconds: 1.5
+  generalConfidenceThreshold: 0.8
+  altoConfidenceThreshold: 0.75
+  tomaConfidenceThreshold: 0.92
+  minimumMargin: 0.15
+  analysisIntervalV9: 0.2
+  minimumRMSV9: 0.003
+  guardarAudioDiagnostico: 0
+  commandCooldownV9: 1.6

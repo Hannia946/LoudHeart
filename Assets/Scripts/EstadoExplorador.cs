@@ -2,71 +2,151 @@ using UnityEngine;
 
 public class EstadoExplorador : MonoBehaviour
 {
-    // Definición de los estados posibles del Explorador
+    // ============================================================
+    // ESTADOS
+    // ============================================================
+
     public enum EstadoPersonaje
     {
-        Quieto,      // ALTO
-        Caminando,   // VA
-        Corriendo,   // CORRE
-        Comiendo,    // COME
-        Curando,     // SANA
-        Cargando     // CARGA
+        Quieto,
+        Caminando,
+        Corriendo,
+        Comiendo,
+        Curando,
+        Cargando,
+        Tomando
     }
 
+
+    // ============================================================
+    // ESTADO ACTUAL
+    // ============================================================
+
     [Header("Estado Actual del Explorador")]
-    public EstadoPersonaje estadoActual = EstadoPersonaje.Quieto;
+
+    public EstadoPersonaje estadoActual =
+        EstadoPersonaje.Quieto;
+
+
+    // ============================================================
+    // EVENTOS
+    // ============================================================
 
     private void OnEnable()
     {
-        // Suscribirse a los comandos de voz de la IA
-        VoiceProcessor.OnComandoDetectado += ProcesarComandoVoz;
+        VoiceProcessor.OnComandoDetectado +=
+            ProcesarComandoVoz;
     }
+
 
     private void OnDisable()
     {
-        // Desuscribirse para evitar errores de memoria
-        VoiceProcessor.OnComandoDetectado -= ProcesarComandoVoz;
+        VoiceProcessor.OnComandoDetectado -=
+            ProcesarComandoVoz;
     }
 
-    private void ProcesarComandoVoz(string comando)
+
+    // ============================================================
+    // PROCESAR COMANDO
+    // ============================================================
+
+    private void ProcesarComandoVoz(
+        string comando
+    )
     {
-        switch (comando)
+        if (
+            string.IsNullOrWhiteSpace(
+                comando
+            )
+        )
+        {
+            return;
+        }
+
+
+        switch (
+            comando
+            .ToLower()
+            .Trim()
+        )
         {
             case "alto":
-                CambiarEstado(EstadoPersonaje.Quieto);
+
+                CambiarEstado(
+                    EstadoPersonaje.Quieto
+                );
+
                 break;
 
-            case "va":
-                CambiarEstado(EstadoPersonaje.Caminando);
+
+            case "avanza":
+
+                CambiarEstado(
+                    EstadoPersonaje.Caminando
+                );
+
                 break;
 
-            case "corre":
-                CambiarEstado(EstadoPersonaje.Corriendo);
+
+            case "trota":
+
+                CambiarEstado(
+                    EstadoPersonaje.Corriendo
+                );
+
                 break;
+
 
             case "come":
-                CambiarEstado(EstadoPersonaje.Comiendo);
+
+                CambiarEstado(
+                    EstadoPersonaje.Comiendo
+                );
+
                 break;
+
 
             case "sana":
-                CambiarEstado(EstadoPersonaje.Curando);
+
+                CambiarEstado(
+                    EstadoPersonaje.Curando
+                );
+
                 break;
+
 
             case "carga":
-                CambiarEstado(EstadoPersonaje.Cargando);
+
+                CambiarEstado(
+                    EstadoPersonaje.Cargando
+                );
+
                 break;
 
-            default:
-                Debug.LogWarning($"?? Comando '{comando}' no tiene acción asignada en los estados.");
+
+            case "toma":
+
+                CambiarEstado(
+                    EstadoPersonaje.Tomando
+                );
+
                 break;
         }
     }
 
-    private void CambiarEstado(EstadoPersonaje nuevoEstado)
-    {
-        estadoActual = nuevoEstado;
-        Debug.Log($"?? ESTADO CAMBIADO: El personaje ahora está en estado **{estadoActual}**");
 
-        // Aquí se activarán las animaciones o la velocidad real cuando esté listo el personaje
+    // ============================================================
+    // CAMBIAR ESTADO
+    // ============================================================
+
+    private void CambiarEstado(
+        EstadoPersonaje nuevoEstado
+    )
+    {
+        estadoActual =
+            nuevoEstado;
+
+        // Aquí después conectaremos Animator,
+        // movimiento, acciones, etc.
     }
 }
