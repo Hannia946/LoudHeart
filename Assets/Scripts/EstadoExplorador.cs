@@ -29,6 +29,24 @@ public class EstadoExplorador : MonoBehaviour
 
 
     // ============================================================
+    // INVENTARIO
+    // ============================================================
+
+    [Header("Inventario del Explorador")]
+
+    public PlayerInventoryManager inventarioExplorador;
+
+
+    // ============================================================
+    // ESTADO VITAL
+    // ============================================================
+
+    [Header("Estado Vital del Explorador")]
+
+    public EstadoVitalExplorador estadoVitalExplorador;
+
+
+    // ============================================================
     // EVENTOS
     // ============================================================
 
@@ -99,27 +117,21 @@ public class EstadoExplorador : MonoBehaviour
 
             case "come":
 
-                CambiarEstado(
-                    EstadoPersonaje.Comiendo
-                );
+                EjecutarCome();
 
                 break;
 
 
             case "sana":
 
-                CambiarEstado(
-                    EstadoPersonaje.Curando
-                );
+                EjecutarSana();
 
                 break;
 
 
             case "carga":
 
-                CambiarEstado(
-                    EstadoPersonaje.Cargando
-                );
+                EjecutarCarga();
 
                 break;
 
@@ -136,6 +148,194 @@ public class EstadoExplorador : MonoBehaviour
 
 
     // ============================================================
+    // COMANDO SANA
+    // ============================================================
+
+    private void EjecutarSana()
+    {
+        if (inventarioExplorador == null)
+        {
+            Debug.LogWarning(
+                "[SANA] No se ha asignado PlayerInventoryManager."
+            );
+
+            return;
+        }
+
+
+        if (estadoVitalExplorador == null)
+        {
+            Debug.LogWarning(
+                "[SANA] No se ha asignado EstadoVitalExplorador."
+            );
+
+            return;
+        }
+
+
+        // No gastar venda si la vida ya está completa
+        if (!estadoVitalExplorador.PuedeSanar())
+        {
+            Debug.LogWarning(
+                "[SANA] La vida ya está completa. No se utilizó ninguna venda."
+            );
+
+            return;
+        }
+
+
+        bool vendaUtilizada =
+            inventarioExplorador.UsarVenda();
+
+
+        if (!vendaUtilizada)
+        {
+            Debug.LogWarning(
+                "[SANA] No se pudo ejecutar porque no hay vendas."
+            );
+
+            return;
+        }
+
+
+        estadoVitalExplorador.Sanar();
+
+
+        CambiarEstado(
+            EstadoPersonaje.Curando
+        );
+
+
+        Debug.Log(
+            "[SANA] Comando ejecutado correctamente."
+        );
+    }
+
+
+    // ============================================================
+    // COMANDO COME
+    // ============================================================
+
+    private void EjecutarCome()
+    {
+        if (inventarioExplorador == null)
+        {
+            Debug.LogWarning(
+                "[COME] No se ha asignado PlayerInventoryManager."
+            );
+
+            return;
+        }
+
+
+        if (estadoVitalExplorador == null)
+        {
+            Debug.LogWarning(
+                "[COME] No se ha asignado EstadoVitalExplorador."
+            );
+
+            return;
+        }
+
+
+        // No gastar comida si la energía ya está completa
+        if (!estadoVitalExplorador.PuedeComer())
+        {
+            Debug.LogWarning(
+                "[COME] La energía ya está completa. No se utilizó comida."
+            );
+
+            return;
+        }
+
+
+        bool comidaUtilizada =
+            inventarioExplorador.UsarComida();
+
+
+        if (!comidaUtilizada)
+        {
+            Debug.LogWarning(
+                "[COME] No se pudo ejecutar porque no hay comida."
+            );
+
+            return;
+        }
+
+
+        estadoVitalExplorador.Comer();
+
+
+        CambiarEstado(
+            EstadoPersonaje.Comiendo
+        );
+
+
+        Debug.Log(
+            "[COME] Comando ejecutado correctamente."
+        );
+    }
+
+
+    // ============================================================
+    // COMANDO CARGA
+    // ============================================================
+
+    private void EjecutarCarga()
+    {
+        if (inventarioExplorador == null)
+        {
+            Debug.LogWarning(
+                "[CARGA] No se ha asignado PlayerInventoryManager."
+            );
+
+            return;
+        }
+
+        if (estadoVitalExplorador == null)
+        {
+            Debug.LogWarning(
+                "[CARGA] No se ha asignado EstadoVitalExplorador."
+            );
+
+            return;
+        }
+
+        // No gastar pila si la batería ya está completa
+        if (!estadoVitalExplorador.PuedeRecargar())
+        {
+            Debug.LogWarning(
+                "[CARGA] La batería ya está completa. No se utilizó ninguna pila."
+            );
+
+            return;
+        }
+
+        bool pilaUtilizada =
+            inventarioExplorador.UsarPila();
+
+        if (!pilaUtilizada)
+        {
+            Debug.LogWarning(
+                "[CARGA] No se pudo ejecutar porque no hay pilas."
+            );
+
+            return;
+        }
+
+        estadoVitalExplorador.RecargarBateria();
+
+        CambiarEstado(
+            EstadoPersonaje.Cargando
+        );
+
+        Debug.Log(
+            "[CARGA] Comando ejecutado correctamente."
+        );
+    }
+
+
+    // ============================================================
     // CAMBIAR ESTADO
     // ============================================================
 
@@ -145,8 +345,5 @@ public class EstadoExplorador : MonoBehaviour
     {
         estadoActual =
             nuevoEstado;
-
-        // Aquí después conectaremos Animator,
-        // movimiento, acciones, etc.
     }
 }

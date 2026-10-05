@@ -535,6 +535,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1328460071}
   - component: {fileID: 1328460070}
+  - component: {fileID: 1328460072}
   m_Layer: 0
   m_Name: ControladorExplorador
   m_TagString: Untagged
@@ -555,6 +556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EstadoExplorador
   estadoActual: 4
+  inventarioExplorador: {fileID: 1328460072}
 --- !u!4 &1328460071
 Transform:
   m_ObjectHideFlags: 0
@@ -570,6 +572,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1328460072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328460069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 454da369f992f7c4d88b44b6dde2a4da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventoryManager
+  cantidadVendas: 0
+  cantidadPilas: 0
+  cantidadComida: 0
+  objetosClaveRecolectados: 0
+  objetoClaveEnMirada: {fileID: 0}
 --- !u!1001 &728189501500635885
 PrefabInstance:
   m_ObjectHideFlags: 0

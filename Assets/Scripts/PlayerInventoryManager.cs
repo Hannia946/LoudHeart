@@ -37,6 +37,71 @@ public class PlayerInventoryManager : MonoBehaviour
                 StartCoroutine(ActivarSuperVelocidad(5f));
                 break;
         }
+
+    }
+    public bool UsarVenda()
+    {
+        if (cantidadVendas <= 0)
+        {
+            Debug.LogWarning(
+                "[SANA] No hay vendas disponibles."
+            );
+
+            return false;
+        }
+
+        cantidadVendas--;
+
+        Debug.Log(
+            "[SANA] Venda utilizada. Vendas restantes: " +
+            cantidadVendas
+        );
+
+        return true;
+    }
+    public bool UsarComida()
+    {
+        if (cantidadComida <= 0)
+        {
+            Debug.LogWarning(
+                "[COME] No hay comida disponible."
+            );
+
+            return false;
+        }
+
+        cantidadComida--;
+
+        Debug.Log(
+            "[COME] Comida utilizada. Comida restante: " +
+            cantidadComida
+        );
+
+        return true;
+    }
+    // ============================================================
+    // USAR PILA - CARGA
+    // ============================================================
+
+    public bool UsarPila()
+    {
+        if (cantidadPilas <= 0)
+        {
+            Debug.LogWarning(
+                "[CARGA] No hay pilas disponibles."
+            );
+
+            return false;
+        }
+
+        cantidadPilas--;
+
+        Debug.Log(
+            "[CARGA] Pila utilizada. Pilas restantes: " +
+            cantidadPilas
+        );
+
+        return true;
     }
 
     private IEnumerator ActivarSuperVelocidad(float duracion)
