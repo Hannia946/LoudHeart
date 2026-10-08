@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4803364097005275424}
   - component: {fileID: 7501647001909431}
   - component: {fileID: -5593330482556204480}
+  - component: {fileID: 8023694463676994148}
   m_Layer: 0
   m_Name: Peluche
   m_TagString: Untagged
@@ -157,3 +158,19 @@ MonoBehaviour:
   idObjeto: 0
   sonidoRecoleccionUnico: {fileID: 0}
   outlineComponent: {fileID: 0}
+--- !u!114 &8023694463676994148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2403860170538344311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa134eb364cbc041ba1a8fa207838ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHighlight
+  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  pulseSpeed: 2
+  minIntensity: 0.2
+  maxIntensity: 2
