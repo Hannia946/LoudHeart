@@ -479,6 +479,75 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &701971611
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 8.386335
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.49999982
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.03951034
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012628239509603735, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2526658596053415854, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2526658596053415854, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3187568774628623531, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: idObjeto
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6004349420786761473, guid: 18c927965d7b625459af5e1b67614655, type: 3}
+      propertyPath: m_Name
+      value: Pelota
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 18c927965d7b625459af5e1b67614655, type: 3}
 --- !u!1 &706360289
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,6 +605,8 @@ GameObject:
   - component: {fileID: 1328460071}
   - component: {fileID: 1328460070}
   - component: {fileID: 1328460072}
+  - component: {fileID: 1328460073}
+  - component: {fileID: 1328460074}
   m_Layer: 0
   m_Name: ControladorExplorador
   m_TagString: Untagged
@@ -557,6 +628,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EstadoExplorador
   estadoActual: 4
   inventarioExplorador: {fileID: 1328460072}
+  estadoVitalExplorador: {fileID: 1328460073}
 --- !u!4 &1328460071
 Transform:
   m_ObjectHideFlags: 0
@@ -584,11 +656,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 454da369f992f7c4d88b44b6dde2a4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventoryManager
-  cantidadVendas: 0
-  cantidadPilas: 0
-  cantidadComida: 0
+  cantidadVendas: 1
+  cantidadPilas: 1
+  cantidadComida: 1
   objetosClaveRecolectados: 0
   objetoClaveEnMirada: {fileID: 0}
+--- !u!114 &1328460073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328460069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd2f0f95db3e5141ac21e96d6f3457b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EstadoVitalExplorador
+  vidaMaxima: 100
+  vidaActual: 100
+  curacionPorVenda: 30
+  energiaMaxima: 100
+  energiaActual: 100
+  energiaPorComida: 25
+  bateriaMaxima: 100
+  bateriaActual: 100
+  recargaPorPila: 40
+  luzLinterna: {fileID: 0}
+  consumoBateriaPorSegundo: 2
+--- !u!114 &1328460074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328460069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b45f9702711ca34799c29c1d5290dca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PruebaTomaObjetoClave
+  inventarioExplorador: {fileID: 1328460072}
+  objetoClavePrueba: {fileID: 0}
+  fijarObjetoAlIniciar: 1
 --- !u!1001 &728189501500635885
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -692,8 +802,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1762007808750395242, guid: 3b8caf1091ae74f42872766ad20bd82a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 728189501500635887}
   m_SourcePrefab: {fileID: 100100000, guid: 3b8caf1091ae74f42872766ad20bd82a, type: 3}
+--- !u!1 &728189501500635886 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1762007808750395242, guid: 3b8caf1091ae74f42872766ad20bd82a, type: 3}
+  m_PrefabInstance: {fileID: 728189501500635885}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &728189501500635887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728189501500635886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b45f9702711ca34799c29c1d5290dca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PruebaTomaObjetoClave
+  inventarioExplorador: {fileID: 1328460072}
+  objetoClavePrueba: {fileID: 0}
+  fijarObjetoAlIniciar: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -705,3 +838,4 @@ SceneRoots:
   - {fileID: 706360291}
   - {fileID: 302254564}
   - {fileID: 692824830}
+  - {fileID: 701971611}

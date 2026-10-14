@@ -111,19 +111,34 @@ public class PlayerInventoryManager : MonoBehaviour
         Debug.Log("Supervelocidad terminada.");
     }
 
-    public void EjecutarComandoToma()
+    public bool EjecutarComandoToma()
     {
-        if (objetoClaveEnMirada != null && objetoClaveEnMirada.EstaFijado())
+        if (
+            objetoClaveEnMirada != null &&
+            objetoClaveEnMirada.EstaFijado()
+        )
         {
             objetosClaveRecolectados++;
-            Debug.Log($"[ÉXITO] ¡Objeto clave '{objetoClaveEnMirada.nombreObjetoClave}' recolectado! Total: {objetosClaveRecolectados}/5");
+
+            Debug.Log(
+                "[TOMA] Objeto clave '" +
+                objetoClaveEnMirada.nombreObjetoClave +
+                "' recolectado. Total: " +
+                objetosClaveRecolectados +
+                "/5"
+            );
 
             objetoClaveEnMirada.RecogerObjeto();
+
             objetoClaveEnMirada = null;
+
+            return true;
         }
-        else
-        {
-            Debug.LogWarning("[RECHAZADO] Se dijo 'TOMA', pero no hay ningún objeto clave en Gaze Lock.");
-        }
+
+        Debug.LogWarning(
+            "[TOMA] Rechazado: no hay ningún objeto clave fijado con Gaze Lock."
+        );
+
+        return false;
     }
 }

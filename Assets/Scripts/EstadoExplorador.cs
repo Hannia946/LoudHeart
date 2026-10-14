@@ -138,9 +138,7 @@ public class EstadoExplorador : MonoBehaviour
 
             case "toma":
 
-                CambiarEstado(
-                    EstadoPersonaje.Tomando
-                );
+                EjecutarToma();
 
                 break;
         }
@@ -334,6 +332,37 @@ public class EstadoExplorador : MonoBehaviour
         );
     }
 
+    // ============================================================
+    // COMANDO TOMA
+    // ============================================================
+
+    private void EjecutarToma()
+    {
+        if (inventarioExplorador == null)
+        {
+            Debug.LogWarning(
+                "[TOMA] No se ha asignado PlayerInventoryManager."
+            );
+
+            return;
+        }
+
+        bool objetoTomado =
+            inventarioExplorador.EjecutarComandoToma();
+
+        if (!objetoTomado)
+        {
+            return;
+        }
+
+        CambiarEstado(
+            EstadoPersonaje.Tomando
+        );
+
+        Debug.Log(
+            "[TOMA] Comando ejecutado correctamente."
+        );
+    }
 
     // ============================================================
     // CAMBIAR ESTADO
