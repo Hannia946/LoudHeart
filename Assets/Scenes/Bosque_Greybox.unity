@@ -305,6 +305,73 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6590893730496298109, guid: dcbb08efcce301c4fb8fc3c17394d9bf, type: 3}
   m_PrefabInstance: {fileID: 11969694}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &12882596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 12882597}
+  - component: {fileID: 12882598}
+  m_Layer: 0
+  m_Name: AudioBosqueGeneral
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &12882597
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12882596}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1782245097}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &12882598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12882596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a55291c05ab56f4e97d3b689f8d20f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioAmbiente3D
+  sonidoViento: {fileID: 8300000, guid: 5ad32a032f519ec4ab0755f5ecd7d2a2, type: 3}
+  sonidoBuho: {fileID: 8300000, guid: 7635882a34a6c84438a7cf56744c940a, type: 3}
+  sonidoRafaga: {fileID: 8300000, guid: 3f2f84b09a18b6d45afcf21c62fd3a9f, type: 3}
+  sonidoAgua: {fileID: 0}
+  sonidoCrujido: {fileID: 8300000, guid: 37a41eb1ef9530341805186b165efef9, type: 3}
+  volumenViento: 0.45
+  volumenBuho: 0.35
+  volumenRafaga: 0.3
+  volumenAgua: 0.6
+  volumenCrujido: 0.8
+  distanciaMinima: 5
+  distanciaMaxima: 30
+  distanciaMinimaAgua: 3
+  distanciaMaximaAgua: 18
+  activarBuho: 1
+  tiempoMinimoBuho: 20
+  tiempoMaximoBuho: 40
+  activarRafaga: 1
+  tiempoMinimoRafaga: 12
+  tiempoMaximoRafaga: 25
+  activarCrujidos: 1
+  tiempoMinimoCrujido: 8
+  tiempoMaximoCrujido: 20
 --- !u!4 &35285009 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6455401281098212930, guid: 5e42d6a995eb375419fd8783125a83b7, type: 3}
@@ -1702,13 +1769,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 203844586}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: -0.46714446, y: 0.27525285, z: 0.6228108, w: -0.56402016}
+  m_LocalPosition: {x: 0.4804299, y: -1.1212506, z: -1.0656829}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 604712594}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 10.608, y: -65.217, z: 257.53}
 --- !u!1001 &216667865
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4040,39 +4107,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8226451556921302289, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 0.5000001
       objectReference: {fileID: 0}
     - target: {fileID: 8226451556921302289, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.0000010791434
       objectReference: {fileID: 0}
     - target: {fileID: 8226451556921302289, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -0.6802613
       objectReference: {fileID: 0}
     - target: {fileID: 8226451556921302289, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.348079
       objectReference: {fileID: 0}
     - target: {fileID: 8226451556921302289, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.19922104
       objectReference: {fileID: 0}
     - target: {fileID: 8226451556921302289, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.6135117
       objectReference: {fileID: 0}
     - target: {fileID: 8226451556921302289, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 45.891
       objectReference: {fileID: 0}
     - target: {fileID: 8226451556921302289, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 347.044
       objectReference: {fileID: 0}
     - target: {fileID: 8226451556921302289, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -89.598
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4643,7 +4710,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &961739750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8416,6 +8483,73 @@ MonoBehaviour:
   cantidadComida: 0
   objetosClaveRecolectados: 0
   objetoClaveEnMirada: {fileID: 0}
+--- !u!1 &2014175855
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2014175856}
+  - component: {fileID: 2014175857}
+  m_Layer: 0
+  m_Name: PuntoAudioAgua
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2014175856
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2014175855}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2870254877639458792}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2014175857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2014175855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a55291c05ab56f4e97d3b689f8d20f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioAmbiente3D
+  sonidoViento: {fileID: 0}
+  sonidoBuho: {fileID: 0}
+  sonidoRafaga: {fileID: 0}
+  sonidoAgua: {fileID: 8300000, guid: 80325ffdf53f44f4abf59bab1ab448f5, type: 3}
+  sonidoCrujido: {fileID: 0}
+  volumenViento: 0.45
+  volumenBuho: 0.35
+  volumenRafaga: 0.55
+  volumenAgua: 0.6
+  volumenCrujido: 0.8
+  distanciaMinima: 5
+  distanciaMaxima: 30
+  distanciaMinimaAgua: 3
+  distanciaMaximaAgua: 18
+  activarBuho: 0
+  tiempoMinimoBuho: 20
+  tiempoMaximoBuho: 40
+  activarRafaga: 0
+  tiempoMinimoRafaga: 12
+  tiempoMaximoRafaga: 25
+  activarCrujidos: 0
+  tiempoMinimoCrujido: 8
+  tiempoMaximoCrujido: 20
 --- !u!1 &2037766202
 GameObject:
   m_ObjectHideFlags: 0
@@ -9281,9 +9415,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4815237734770167787, guid: abfe01f02ff4e064ab18145108525089, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2014175856}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: abfe01f02ff4e064ab18145108525089, type: 3}
+--- !u!4 &2870254877639458792 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4815237734770167787, guid: abfe01f02ff4e064ab18145108525089, type: 3}
+  m_PrefabInstance: {fileID: 2870254877639458791}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2909130663370678343
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9627,7 +9769,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4069927459020978354, guid: 0da231f3c335b8140970d8e57a0a3533, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 12882597}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0da231f3c335b8140970d8e57a0a3533, type: 3}
 --- !u!1001 &6458763789512751343
