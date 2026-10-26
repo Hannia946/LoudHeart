@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4297835336206431161}
   - component: {fileID: 129149963560789317}
   - component: {fileID: 5943604625036903711}
+  - component: {fileID: 4511902493259458715}
   m_Layer: 0
   m_Name: Bicicleta
   m_TagString: Untagged
@@ -153,7 +154,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c64fc25fdf4248f4897dfab86b7783d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyItem
-  nombreObjetoClave: Bicileta
+  nombreObjetoClave: Bicicleta
   idObjeto: 0
   sonidoRecoleccionUnico: {fileID: 0}
   outlineComponent: {fileID: 0}
+--- !u!114 &4511902493259458715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7738187439172080851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa134eb364cbc041ba1a8fa207838ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHighlight
+  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  pulseSpeed: 2
+  minIntensity: 0.2
+  maxIntensity: 2
