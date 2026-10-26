@@ -18,6 +18,16 @@ public class ConsumableItem : MonoBehaviour
             {
                 inventario.AgregarConsumible(tipoConsumible, cantidad);
 
+                // Si el consumible es el Hongo, activa el boost de velocidad y la distorsión visual
+                if (tipoConsumible == ConsumableType.HongoSpeed)
+                {
+                    SpeedBoostEffect boost = other.GetComponent<SpeedBoostEffect>();
+                    if (boost != null)
+                    {
+                        boost.ActivarEfectoVelocidad();
+                    }
+                }
+
                 if (sonidoRecoleccion != null)
                 {
                     AudioSource.PlayClipAtPoint(sonidoRecoleccion, transform.position);

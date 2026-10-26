@@ -3,12 +3,11 @@ using UnityEngine;
 
 public class SpeedBoostEffect : MonoBehaviour
 {
-    [Header("Referencias de Cámara")]
+    [Header("Referencias de Cámara y Post-Processing")]
     [SerializeField] private Camera mainCamera;
 
-    [Header("Efecto Visual de Pantalla (Overlay)")]
-    [SerializeField] private CanvasGroup screenOverlayCanvasGroup;
-    [SerializeField][Range(0.1f, 1f)] private float maxOverlayAlpha = 0.35f; // Controla la transparencia máxima
+    [Tooltip("Arrastra aquí el objeto Volumen_HongoSpeed de la Hierarchy")]
+    [SerializeField] private GameObject volumenHongoSpeed;
 
     [Header("Configuración de Velocidad (FOV)")]
     [SerializeField] private float normalFOV = 60f;
@@ -16,7 +15,7 @@ public class SpeedBoostEffect : MonoBehaviour
     [SerializeField] private float transitionSpeed = 5f;
 
     [Header("Duración")]
-    [SerializeField] private float boostDuration = 3.5f;
+    [SerializeField] private float boostDuration = 5f; // Duración de 5 segundos
 
     private Coroutine boostCoroutine;
 
@@ -32,10 +31,10 @@ public class SpeedBoostEffect : MonoBehaviour
             normalFOV = mainCamera.fieldOfView;
         }
 
-        // Ocultar la imagen al iniciar
-        if (screenOverlayCanvasGroup != null)
+        // Asegurarnos de que el volumen inicie apagado
+        if (volumenHongoSpeed != null)
         {
-            screenOverlayCanvasGroup.alpha = 0f;
+            volumenHongoSpeed.SetActive(false);
         }
     }
 
@@ -60,35 +59,39 @@ public class SpeedBoostEffect : MonoBehaviour
     {
         if (mainCamera == null) yield break;
 
-        // 1. Aumentar FOV y mostrar la imagen progresivamente
+        // 1. Activar los efectos de la cámara (Motion Blur, Lens Distortion, Aberración Chromática)
+        if (volumenHongoSpeed != null)
+        {
+            volumenHongoSpeed.SetActive(true);
+        }
+
+        // 2. Aumentar el FOV de la cámara suavemente para acentuar el impulso
         float t = 0f;
         while (t < 1f)
         {
             t += Time.deltaTime * transitionSpeed;
             mainCamera.fieldOfView = Mathf.Lerp(normalFOV, boostFOV, t);
-
-            if (screenOverlayCanvasGroup != null)
-            {
-                screenOverlayCanvasGroup.alpha = Mathf.Lerp(0f, maxOverlayAlpha, t);
-            }
             yield return null;
         }
 
-        // 2. Mantener la velocidad y el tinte morado activo
+        // 3. Mantener la velocidad activa durante la duración configurada
         yield return new WaitForSeconds(boostDuration);
 
-        // 3. Volver FOV a la normalidad y desvanecer la imagen
+        // 4. Regresar el FOV a la normalidad suavemente
         t = 0f;
         while (t < 1f)
         {
             t += Time.deltaTime * transitionSpeed;
             mainCamera.fieldOfView = Mathf.Lerp(boostFOV, normalFOV, t);
-
-            if (screenOverlayCanvasGroup != null)
-            {
-                screenOverlayCanvasGroup.alpha = Mathf.Lerp(maxOverlayAlpha, 0f, t);
-            }
             yield return null;
         }
+
+        // 5. Apagar los efectos visuales
+        if (volumenHongoSpeed != null)
+        {
+            volumenHongoSpeed.SetActive(false);
+        }
+
+        boostCoroutine = null;
     }
 }
