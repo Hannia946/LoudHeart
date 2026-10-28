@@ -29,6 +29,15 @@ public class EstadoExplorador : MonoBehaviour
 
 
     // ============================================================
+    // CONTROL DE MOVIMIENTO
+    // ============================================================
+
+    [Header("Control de Cabeza y Movimiento")]
+
+    public PlayerHeadController headController;
+
+
+    // ============================================================
     // INVENTARIO
     // ============================================================
 
@@ -82,11 +91,19 @@ public class EstadoExplorador : MonoBehaviour
         }
 
 
-        switch (
+        comando =
             comando
             .ToLower()
-            .Trim()
-        )
+            .Trim();
+
+
+        Debug.Log(
+            "[ESTADO EXPLORADOR] Comando recibido: " +
+            comando
+        );
+
+
+        switch (comando)
         {
             case "alto":
 
@@ -171,11 +188,13 @@ public class EstadoExplorador : MonoBehaviour
         }
 
 
-        // No gastar venda si la vida ya está completa
-        if (!estadoVitalExplorador.PuedeSanar())
+        if (
+            !estadoVitalExplorador.PuedeSanar()
+        )
         {
             Debug.LogWarning(
-                "[SANA] La vida ya está completa. No se utilizó ninguna venda."
+                "[SANA] La vida ya está completa. " +
+                "No se utilizó ninguna venda."
             );
 
             return;
@@ -236,11 +255,13 @@ public class EstadoExplorador : MonoBehaviour
         }
 
 
-        // No gastar comida si la energía ya está completa
-        if (!estadoVitalExplorador.PuedeComer())
+        if (
+            !estadoVitalExplorador.PuedeComer()
+        )
         {
             Debug.LogWarning(
-                "[COME] La energía ya está completa. No se utilizó comida."
+                "[COME] La energía ya está completa. " +
+                "No se utilizó comida."
             );
 
             return;
@@ -290,6 +311,7 @@ public class EstadoExplorador : MonoBehaviour
             return;
         }
 
+
         if (estadoVitalExplorador == null)
         {
             Debug.LogWarning(
@@ -299,18 +321,23 @@ public class EstadoExplorador : MonoBehaviour
             return;
         }
 
-        // No gastar pila si la batería ya está completa
-        if (!estadoVitalExplorador.PuedeRecargar())
+
+        if (
+            !estadoVitalExplorador.PuedeRecargar()
+        )
         {
             Debug.LogWarning(
-                "[CARGA] La batería ya está completa. No se utilizó ninguna pila."
+                "[CARGA] La batería ya está completa. " +
+                "No se utilizó ninguna pila."
             );
 
             return;
         }
 
+
         bool pilaUtilizada =
             inventarioExplorador.UsarPila();
+
 
         if (!pilaUtilizada)
         {
@@ -321,16 +348,21 @@ public class EstadoExplorador : MonoBehaviour
             return;
         }
 
-        estadoVitalExplorador.RecargarBateria();
+
+        estadoVitalExplorador
+            .RecargarBateria();
+
 
         CambiarEstado(
             EstadoPersonaje.Cargando
         );
 
+
         Debug.Log(
             "[CARGA] Comando ejecutado correctamente."
         );
     }
+
 
     // ============================================================
     // COMANDO TOMA
@@ -347,22 +379,28 @@ public class EstadoExplorador : MonoBehaviour
             return;
         }
 
+
         bool objetoTomado =
-            inventarioExplorador.EjecutarComandoToma();
+            inventarioExplorador
+                .EjecutarComandoToma();
+
 
         if (!objetoTomado)
         {
             return;
         }
 
+
         CambiarEstado(
             EstadoPersonaje.Tomando
         );
+
 
         Debug.Log(
             "[TOMA] Comando ejecutado correctamente."
         );
     }
+
 
     // ============================================================
     // CAMBIAR ESTADO
@@ -374,5 +412,60 @@ public class EstadoExplorador : MonoBehaviour
     {
         estadoActual =
             nuevoEstado;
+
+
+        Debug.Log(
+            "[ESTADO EXPLORADOR] Nuevo estado: " +
+            estadoActual
+        );
+
+
+        if (headController == null)
+        {
+            Debug.LogWarning(
+                "[MOVIMIENTO] PlayerHeadController no está asignado."
+            );
+
+            return;
+        }
+
+
+        switch (nuevoEstado)
+        {
+            // ====================================================
+            // AVANZA
+            // ====================================================
+
+            case EstadoPersonaje.Caminando:
+
+                headController
+                    .IniciarMovimiento(3f);
+
+                break;
+
+
+            // ====================================================
+            // TROTA
+            // ====================================================
+
+            case EstadoPersonaje.Corriendo:
+
+                headController
+                    .IniciarMovimiento(6f);
+
+                break;
+
+
+            // ====================================================
+            // ALTO
+            // ====================================================
+
+            case EstadoPersonaje.Quieto:
+
+                headController
+                    .DetenerMovimiento();
+
+                break;
+        }
     }
 }
