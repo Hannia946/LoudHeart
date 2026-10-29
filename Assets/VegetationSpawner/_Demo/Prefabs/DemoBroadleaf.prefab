@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2611539540731813988}
   - component: {fileID: 8177757628385059802}
   - component: {fileID: 8434828289214908847}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DemoBroadleaf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 5516303386431747772}
   - component: {fileID: 8872657657409009945}
   - component: {fileID: 6685299427102658003}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DemoBroadleaf_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
