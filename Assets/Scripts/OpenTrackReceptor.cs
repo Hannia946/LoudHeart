@@ -7,29 +7,37 @@ public class OpenTrackReceptor : ProveedorHeadTracking
     public float rawYaw { get; private set; }
     public float rawPitch { get; private set; }
 
+    [SerializeField] private int listenPort = 5555;
+
     private UdpClient udpClient;
     private Thread receiveThread;
-    private bool isRunning;
-    private int listenPort = 5555; // Puerto de OpenTrack
+    private volatile bool isRunning;
+   
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void OnEnable()
     {
         isRunning = true;
-        receiveThread = new Thread(ReceiveData);
-        receiveThread.IsBackground = true;
+        receiveThread = new Thread(ReceiveData) { IsBackground = true};
         receiveThread.Start();
 
     }
+
+    private void OnDisable()
+    {
+        Detener();
+    }
+
+    void OnApplicationQuit() { Detener(); }
 
     private void ReceiveData()
     {
         try
         {
-            // Permite reutilizar el puerto sin que Windows lance la SocketException
-            udpClient = new UdpClient();
-            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, listenPort));
+            var client = new UdpClient();
+            udpClient = client;
+            client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            client.Client.Bind(new IPEndPoint(IPAddress.Any, listenPort));
 
             IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, listenPort);
 
@@ -45,17 +53,18 @@ public class OpenTrackReceptor : ProveedorHeadTracking
         }
         catch (System.Exception e)
         {
-            Debug.LogWarning("Estado del puerto UDP: " + e.Message);
+            if (isRunning) Debug.LogWarning("Estado del puerto UDP: " + e.Message);
         }
     }
 
 
 
-    void OnApplicationQuit()
+    private void Detener()
     {
         isRunning = false;
-        if (receiveThread != null) receiveThread.Abort();
-        if (udpClient != null) udpClient.Close();
+        if (udpClient != null) { udpClient.Close(); udpClient = null; }
+        if (receiveThread != null && receiveThread.IsAlive) receiveThread.Join(200);
+        receiveThread = null;
     }
 
     public override float ObtenerYaw() { return rawYaw; }
