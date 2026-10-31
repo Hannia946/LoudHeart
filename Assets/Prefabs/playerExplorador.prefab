@@ -19,6 +19,9 @@ GameObject:
   - component: {fileID: 7894920010065597755}
   - component: {fileID: 2857066740905658966}
   - component: {fileID: 3679214006484421119}
+  - component: {fileID: 3421695198177760232}
+  - component: {fileID: 406373898211539517}
+  - component: {fileID: -5026812653624467957}
   m_Layer: 0
   m_Name: playerExplorador
   m_TagString: Player
@@ -49,11 +52,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3220439426502892978}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac3e744704b74dd4ea910b7b6c4fa39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OpenTrackReceptor
+  listenPort: 5555
 --- !u!114 &913311508861966123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,7 +65,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3220439426502892978}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d9e1ba87d5dc7d43a83f59f4fb6a03b, type: 3}
   m_Name: 
@@ -260,6 +264,63 @@ MonoBehaviour:
   UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
+--- !u!114 &3421695198177760232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3220439426502892978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4b69de6fd7c76d43a645f69710b4a17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ConfiguracionLocal
+  ShowTopMostFoldoutHeaderGroup: 1
+  camaraOjos: {fileID: 5571381644943400046}
+  audioListener: {fileID: 8372134184621246213}
+  receptor: {fileID: 6535738517081145060}
+  headController: {fileID: 913311508861966123}
+--- !u!114 &406373898211539517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3220439426502892978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde03de05f6a3a946ae182d8379c5e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EstadoExplorador
+  ShowTopMostFoldoutHeaderGroup: 1
+  estadoActual: 0
+  headController: {fileID: 913311508861966123}
+  inventarioExplorador: {fileID: 921185268106369886}
+  estadoVitalExplorador: {fileID: -5026812653624467957}
+--- !u!114 &-5026812653624467957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3220439426502892978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd2f0f95db3e5141ac21e96d6f3457b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EstadoVitalExplorador
+  vidaMaxima: 100
+  vidaActual: 60
+  curacionPorVenda: 30
+  energiaMaxima: 100
+  energiaActual: 50
+  energiaPorComida: 25
+  bateriaMaxima: 100
+  bateriaActual: 40
+  recargaPorPila: 40
+  luzLinterna: {fileID: 0}
+  consumoBateriaPorSegundo: 2
 --- !u!1 &3519498831154110442
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,7 +395,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5871558747211418328}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -385,7 +446,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5871558747211418328}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!114 &3990557524738419843
 MonoBehaviour:
   m_ObjectHideFlags: 0
