@@ -1,6 +1,6 @@
 using UnityEngine;
-
-public class EstadoExplorador : MonoBehaviour
+using Unity.Netcode;
+public class EstadoExplorador : NetworkBehaviour
 {
     // ============================================================
     // ESTADOS
@@ -59,17 +59,16 @@ public class EstadoExplorador : MonoBehaviour
     // EVENTOS
     // ============================================================
 
-    private void OnEnable()
+    public override void OnNetworkSpawn()
     {
-        VoiceProcessor.OnComandoDetectado +=
-            ProcesarComandoVoz;
+        if (!IsOwner) return;             // los remotos no escuchan comandos
+        VoiceProcessor.OnComandoDetectado += ProcesarComandoVoz;
     }
 
-
-    private void OnDisable()
+    public override void OnNetworkDespawn()
     {
-        VoiceProcessor.OnComandoDetectado -=
-            ProcesarComandoVoz;
+        if (IsOwner)
+            VoiceProcessor.OnComandoDetectado -= ProcesarComandoVoz;
     }
 
 
