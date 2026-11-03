@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 8226451556921302289}
   - component: {fileID: 6535738517081145060}
   - component: {fileID: 913311508861966123}
+  - component: {fileID: 7894920010065597755}
   - component: {fileID: 921185268106369886}
   - component: {fileID: 3528716853690542466}
   - component: {fileID: 3259156582844448593}
   - component: {fileID: 2353355997149969534}
   - component: {fileID: 5471106341086414064}
-  - component: {fileID: 7894920010065597755}
   - component: {fileID: 2857066740905658966}
   - component: {fileID: 3679214006484421119}
   - component: {fileID: 3421695198177760232}
@@ -81,6 +81,31 @@ MonoBehaviour:
   zonaMuertaMoviendo: 3
   multiplicadorGiroCuerpo: 3
   estaCalibrado: 1
+--- !u!114 &7894920010065597755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3220439426502892978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 309682463
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &921185268106369886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,10 +118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 454da369f992f7c4d88b44b6dde2a4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventoryManager
+  ShowTopMostFoldoutHeaderGroup: 1
   cantidadVendas: 0
   cantidadPilas: 0
-  cantidadComida: 0
-  objetosClaveRecolectados: 0
   objetoClaveEnMirada: {fileID: 0}
 --- !u!54 &3528716853690542466
 Rigidbody:
@@ -177,31 +201,6 @@ MonoBehaviour:
   boostFOV: 80
   transitionSpeed: 5
   boostDuration: 3.5
---- !u!114 &7894920010065597755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3220439426502892978}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 309682463
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &2857066740905658966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,8 +297,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   estadoActual: 0
   headController: {fileID: 913311508861966123}
-  inventarioExplorador: {fileID: 921185268106369886}
-  estadoVitalExplorador: {fileID: -5026812653624467957}
 --- !u!114 &-5026812653624467957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,17 +309,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dd2f0f95db3e5141ac21e96d6f3457b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EstadoVitalExplorador
+  ShowTopMostFoldoutHeaderGroup: 1
   vidaMaxima: 100
   vidaActual: 60
   curacionPorVenda: 30
   energiaMaxima: 100
   energiaActual: 50
-  energiaPorComida: 25
   bateriaMaxima: 100
   bateriaActual: 40
   recargaPorPila: 40
   luzLinterna: {fileID: 0}
   consumoBateriaPorSegundo: 2
+  inventario: {fileID: 921185268106369886}
+  umbralVida: 40
+  umbralBateria: 25
+  enfriamientoUso: 1
 --- !u!1 &3519498831154110442
 GameObject:
   m_ObjectHideFlags: 0
