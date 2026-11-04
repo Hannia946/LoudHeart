@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -8338380940432707860}
   - component: {fileID: 6267728065067278128}
   - component: {fileID: 1514606137266192182}
+  - component: {fileID: -5572836490683150629}
   m_Layer: 0
   m_Name: Canicas
   m_TagString: Untagged
@@ -143,6 +144,27 @@ MonoBehaviour:
   pulseSpeed: 2
   minIntensity: 0.2
   maxIntensity: 10
+--- !u!135 &-5572836490683150629
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7083628714115117328}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1892865129689025631
 PrefabInstance:
   m_ObjectHideFlags: 0

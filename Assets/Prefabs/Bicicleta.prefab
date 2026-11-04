@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5943604625036903711}
   - component: {fileID: 4511902493259458715}
   - component: {fileID: 852825734079726045}
+  - component: {fileID: 2223718678361956992}
   m_Layer: 10
   m_Name: Bicicleta
   m_TagString: Untagged
@@ -142,6 +143,27 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!135 &2223718678361956992
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7738187439172080851}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &7827706096503215602
 PrefabInstance:

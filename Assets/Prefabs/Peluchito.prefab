@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7203093450205640350}
   - component: {fileID: 3187568774628623531}
   - component: {fileID: 9095254659041389860}
+  - component: {fileID: 4708371889267643816}
   m_Layer: 0
   m_Name: Peluchito
   m_TagString: Untagged
@@ -143,6 +144,27 @@ MonoBehaviour:
   pulseSpeed: 2
   minIntensity: 0.2
   maxIntensity: 10
+--- !u!135 &4708371889267643816
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6004349420786761473}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &2039872589744949102
 PrefabInstance:
   m_ObjectHideFlags: 0
