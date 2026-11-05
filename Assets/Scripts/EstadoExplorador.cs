@@ -1,67 +1,22 @@
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
+
 public class EstadoExplorador : NetworkBehaviour
 {
-    // ============================================================
-    // ESTADOS
-    // ============================================================
-
     public enum EstadoPersonaje
     {
-        Quieto,
-        Caminando,
-        Corriendo,
-        Comiendo,
-        Curando,
-        Cargando,
-        Tomando
+        Quieto, Caminando, Corriendo, Comiendo, Curando, Cargando, Tomando
     }
 
-
-    // ============================================================
-    // ESTADO ACTUAL
-    // ============================================================
-
     [Header("Estado Actual del Explorador")]
-
-    public EstadoPersonaje estadoActual =
-        EstadoPersonaje.Quieto;
-
-
-    // ============================================================
-    // CONTROL DE MOVIMIENTO
-    // ============================================================
+    public EstadoPersonaje estadoActual = EstadoPersonaje.Quieto;
 
     [Header("Control de Cabeza y Movimiento")]
-
     public PlayerHeadController headController;
-
-
-    // ============================================================
-    // INVENTARIO
-    // ============================================================
-
-    [Header("Inventario del Explorador")]
-
-    public PlayerInventoryManager inventarioExplorador;
-
-
-    // ============================================================
-    // ESTADO VITAL
-    // ============================================================
-
-    [Header("Estado Vital del Explorador")]
-
-    public EstadoVitalExplorador estadoVitalExplorador;
-
-
-    // ============================================================
-    // EVENTOS
-    // ============================================================
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner) return;             // los remotos no escuchan comandos
+        if (!IsOwner) return;   // los remotos no escuchan comandos
         VoiceProcessor.OnComandoDetectado += ProcesarComandoVoz;
     }
 
@@ -71,400 +26,38 @@ public class EstadoExplorador : NetworkBehaviour
             VoiceProcessor.OnComandoDetectado -= ProcesarComandoVoz;
     }
 
-
-    // ============================================================
-    // PROCESAR COMANDO
-    // ============================================================
-
-    private void ProcesarComandoVoz(
-        string comando
-    )
+    private void ProcesarComandoVoz(string comando)
     {
-        if (
-            string.IsNullOrWhiteSpace(
-                comando
-            )
-        )
-        {
-            return;
-        }
+        if (string.IsNullOrWhiteSpace(comando)) return;
 
-
-        comando =
-            comando
-            .ToLower()
-            .Trim();
-
-
-        Debug.Log(
-            "[ESTADO EXPLORADOR] Comando recibido: " +
-            comando
-        );
-
+        comando = comando.ToLower().Trim();
+        Debug.Log("[ESTADO EXPLORADOR] Comando recibido: " + comando);
 
         switch (comando)
         {
-            case "alto":
-
-                CambiarEstado(
-                    EstadoPersonaje.Quieto
-                );
-
-                break;
-
-
-            case "avanza":
-
-                CambiarEstado(
-                    EstadoPersonaje.Caminando
-                );
-
-                break;
-
-
-            case "trota":
-
-                CambiarEstado(
-                    EstadoPersonaje.Corriendo
-                );
-
-                break;
-
-
-            case "come":
-
-                EjecutarCome();
-
-                break;
-
-
-            case "sana":
-
-                EjecutarSana();
-
-                break;
-
-
-            case "carga":
-
-                EjecutarCarga();
-
-                break;
-
-
-            case "toma":
-
-                EjecutarToma();
-
-                break;
+            case "alto": CambiarEstado(EstadoPersonaje.Quieto); break;
+            case "avanza": CambiarEstado(EstadoPersonaje.Caminando); break;
+            case "trota": CambiarEstado(EstadoPersonaje.Corriendo); break;
+                // "come", "sana", "carga" y "toma" ya no se usan: se ignoran
         }
     }
 
-
-    // ============================================================
-    // COMANDO SANA
-    // ============================================================
-
-    private void EjecutarSana()
+    private void CambiarEstado(EstadoPersonaje nuevoEstado)
     {
-        if (inventarioExplorador == null)
-        {
-            Debug.LogWarning(
-                "[SANA] No se ha asignado PlayerInventoryManager."
-            );
-
-            return;
-        }
-
-
-        if (estadoVitalExplorador == null)
-        {
-            Debug.LogWarning(
-                "[SANA] No se ha asignado EstadoVitalExplorador."
-            );
-
-            return;
-        }
-
-
-        if (
-            !estadoVitalExplorador.PuedeSanar()
-        )
-        {
-            Debug.LogWarning(
-                "[SANA] La vida ya está completa. " +
-                "No se utilizó ninguna venda."
-            );
-
-            return;
-        }
-
-
-        bool vendaUtilizada =
-            inventarioExplorador.UsarVenda();
-
-
-        if (!vendaUtilizada)
-        {
-            Debug.LogWarning(
-                "[SANA] No se pudo ejecutar porque no hay vendas."
-            );
-
-            return;
-        }
-
-
-        estadoVitalExplorador.Sanar();
-
-
-        CambiarEstado(
-            EstadoPersonaje.Curando
-        );
-
-
-        Debug.Log(
-            "[SANA] Comando ejecutado correctamente."
-        );
-    }
-
-
-    // ============================================================
-    // COMANDO COME
-    // ============================================================
-
-    private void EjecutarCome()
-    {
-        if (inventarioExplorador == null)
-        {
-            Debug.LogWarning(
-                "[COME] No se ha asignado PlayerInventoryManager."
-            );
-
-            return;
-        }
-
-
-        if (estadoVitalExplorador == null)
-        {
-            Debug.LogWarning(
-                "[COME] No se ha asignado EstadoVitalExplorador."
-            );
-
-            return;
-        }
-
-
-        if (
-            !estadoVitalExplorador.PuedeComer()
-        )
-        {
-            Debug.LogWarning(
-                "[COME] La energía ya está completa. " +
-                "No se utilizó comida."
-            );
-
-            return;
-        }
-
-
-        bool comidaUtilizada =
-            inventarioExplorador.UsarComida();
-
-
-        if (!comidaUtilizada)
-        {
-            Debug.LogWarning(
-                "[COME] No se pudo ejecutar porque no hay comida."
-            );
-
-            return;
-        }
-
-
-        estadoVitalExplorador.Comer();
-
-
-        CambiarEstado(
-            EstadoPersonaje.Comiendo
-        );
-
-
-        Debug.Log(
-            "[COME] Comando ejecutado correctamente."
-        );
-    }
-
-
-    // ============================================================
-    // COMANDO CARGA
-    // ============================================================
-
-    private void EjecutarCarga()
-    {
-        if (inventarioExplorador == null)
-        {
-            Debug.LogWarning(
-                "[CARGA] No se ha asignado PlayerInventoryManager."
-            );
-
-            return;
-        }
-
-
-        if (estadoVitalExplorador == null)
-        {
-            Debug.LogWarning(
-                "[CARGA] No se ha asignado EstadoVitalExplorador."
-            );
-
-            return;
-        }
-
-
-        if (
-            !estadoVitalExplorador.PuedeRecargar()
-        )
-        {
-            Debug.LogWarning(
-                "[CARGA] La batería ya está completa. " +
-                "No se utilizó ninguna pila."
-            );
-
-            return;
-        }
-
-
-        bool pilaUtilizada =
-            inventarioExplorador.UsarPila();
-
-
-        if (!pilaUtilizada)
-        {
-            Debug.LogWarning(
-                "[CARGA] No se pudo ejecutar porque no hay pilas."
-            );
-
-            return;
-        }
-
-
-        estadoVitalExplorador
-            .RecargarBateria();
-
-
-        CambiarEstado(
-            EstadoPersonaje.Cargando
-        );
-
-
-        Debug.Log(
-            "[CARGA] Comando ejecutado correctamente."
-        );
-    }
-
-
-    // ============================================================
-    // COMANDO TOMA
-    // ============================================================
-
-    private void EjecutarToma()
-    {
-        if (inventarioExplorador == null)
-        {
-            Debug.LogWarning(
-                "[TOMA] No se ha asignado PlayerInventoryManager."
-            );
-
-            return;
-        }
-
-
-        bool objetoTomado =
-            inventarioExplorador
-                .EjecutarComandoToma();
-
-
-        if (!objetoTomado)
-        {
-            return;
-        }
-
-
-        CambiarEstado(
-            EstadoPersonaje.Tomando
-        );
-
-
-        Debug.Log(
-            "[TOMA] Comando ejecutado correctamente."
-        );
-    }
-
-
-    // ============================================================
-    // CAMBIAR ESTADO
-    // ============================================================
-
-    private void CambiarEstado(
-        EstadoPersonaje nuevoEstado
-    )
-    {
-        estadoActual =
-            nuevoEstado;
-
-
-        Debug.Log(
-            "[ESTADO EXPLORADOR] Nuevo estado: " +
-            estadoActual
-        );
-
+        estadoActual = nuevoEstado;
+        Debug.Log("[ESTADO EXPLORADOR] Nuevo estado: " + estadoActual);
 
         if (headController == null)
         {
-            Debug.LogWarning(
-                "[MOVIMIENTO] PlayerHeadController no está asignado."
-            );
-
+            Debug.LogWarning("[MOVIMIENTO] PlayerHeadController no está asignado.");
             return;
         }
 
-
         switch (nuevoEstado)
         {
-            // ====================================================
-            // AVANZA
-            // ====================================================
-
-            case EstadoPersonaje.Caminando:
-
-                headController
-                    .IniciarMovimiento(3f);
-
-                break;
-
-
-            // ====================================================
-            // TROTA
-            // ====================================================
-
-            case EstadoPersonaje.Corriendo:
-
-                headController
-                    .IniciarMovimiento(6f);
-
-                break;
-
-
-            // ====================================================
-            // ALTO
-            // ====================================================
-
-            case EstadoPersonaje.Quieto:
-
-                headController
-                    .DetenerMovimiento();
-
-                break;
+            case EstadoPersonaje.Caminando: headController.IniciarMovimiento(3f); break;
+            case EstadoPersonaje.Corriendo: headController.IniciarMovimiento(6f); break;
+            case EstadoPersonaje.Quieto: headController.DetenerMovimiento(); break;
         }
     }
 }

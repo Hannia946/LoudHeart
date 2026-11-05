@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class ConsumableItem : MonoBehaviour
+public class ConsumableItem : NetworkBehaviour
 {
     public enum ConsumableType { Venda, Pila, Comida, HongoSpeed }
 
@@ -9,32 +10,27 @@ public class ConsumableItem : MonoBehaviour
     public int cantidad = 1;
     [SerializeField] private AudioClip sonidoRecoleccion;
 
+    private bool recogido = false;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            PlayerInventoryManager inventario = other.GetComponent<PlayerInventoryManager>();
-            if (inventario != null)
-            {
-                inventario.AgregarConsumible(tipoConsumible, cantidad);
+        if (!IsServer || recogido) return;   // solo decide el servidor
 
-                // Si el consumible es el Hongo, activa el boost de velocidad y la distorsión visual
-                if (tipoConsumible == ConsumableType.HongoSpeed)
-                {
-                    SpeedBoostEffect boost = other.GetComponent<SpeedBoostEffect>();
-                    if (boost != null)
-                    {
-                        boost.ActivarEfectoVelocidad();
-                    }
-                }
+        var inventario = other.GetComponentInParent<PlayerInventoryManager>();
+        if (inventario == null) return;
 
-                if (sonidoRecoleccion != null)
-                {
-                    AudioSource.PlayClipAtPoint(sonidoRecoleccion, transform.position);
-                }
+        recogido = true;
 
-                Destroy(gameObject);
-            }
-        }
+        inventario.RecibirConsumible(tipoConsumible, cantidad);   // avisa al dueño
+        ReproducirSonidoClientRpc();
+        NetworkObject.Despawn();
+
+    }
+
+    [ClientRpc]
+    private void ReproducirSonidoClientRpc()
+    {
+        if (sonidoRecoleccion != null)
+            AudioSource.PlayClipAtPoint(sonidoRecoleccion, transform.position);
     }
 }
