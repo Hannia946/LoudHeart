@@ -1204,6 +1204,73 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: d7cc6b9e9cc155f48a34f135e3769544, type: 3}
   m_PrefabInstance: {fileID: 169323507}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &177394632 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3220439426502892978, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
+  m_PrefabInstance: {fileID: 770599835}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &177394637 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 921185268106369886, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
+  m_PrefabInstance: {fileID: 770599835}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177394632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 454da369f992f7c4d88b44b6dde2a4da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventoryManager
+--- !u!114 &177394641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177394632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd2f0f95db3e5141ac21e96d6f3457b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EstadoVitalExplorador
+  vidaMaxima: 100
+  vidaActual: 60
+  curacionPorVenda: 30
+  energiaMaxima: 100
+  energiaActual: 50
+  energiaPorComida: 25
+  bateriaMaxima: 100
+  bateriaActual: 40
+  recargaPorPila: 40
+  luzLinterna: {fileID: 0}
+  consumoBateriaPorSegundo: 2
+--- !u!114 &177394642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177394632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde03de05f6a3a946ae182d8379c5e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EstadoExplorador
+  ShowTopMostFoldoutHeaderGroup: 1
+  estadoActual: 0
+  headController: {fileID: 177394647}
+  inventarioExplorador: {fileID: 177394637}
+  estadoVitalExplorador: {fileID: 177394641}
+--- !u!114 &177394647 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 913311508861966123, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
+  m_PrefabInstance: {fileID: 770599835}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177394632}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9e1ba87d5dc7d43a83f59f4fb6a03b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHeadController
 --- !u!1 &193266780
 GameObject:
   m_ObjectHideFlags: 0
@@ -1577,8 +1644,7 @@ Transform:
   m_LocalPosition: {x: -90.6, y: -0.3, z: 71}
   m_LocalScale: {x: 12.11393, y: 1.0212, z: 12.63925}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 403839095}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 16.099, z: 0}
 --- !u!114 &274569477
@@ -1834,73 +1900,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1305268638}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &403839094
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 403839095}
-  - component: {fileID: 403839096}
-  m_Layer: 0
-  m_Name: PuntoAudioAgua
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &403839095
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403839094}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 274569476}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &403839096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403839094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a55291c05ab56f4e97d3b689f8d20f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioAmbiente3D
-  sonidoViento: {fileID: 0}
-  sonidoBuho: {fileID: 0}
-  sonidoRafaga: {fileID: 0}
-  sonidoAgua: {fileID: 8300000, guid: 80325ffdf53f44f4abf59bab1ab448f5, type: 3}
-  sonidoCrujido: {fileID: 0}
-  volumenViento: 0.45
-  volumenBuho: 0.35
-  volumenRafaga: 0.55
-  volumenAgua: 0.6
-  volumenCrujido: 0.8
-  distanciaMinima: 5
-  distanciaMaxima: 30
-  distanciaMinimaAgua: 20
-  distanciaMaximaAgua: 65
-  activarBuho: 0
-  tiempoMinimoBuho: 20
-  tiempoMaximoBuho: 40
-  activarRafaga: 0
-  tiempoMinimoRafaga: 12
-  tiempoMaximoRafaga: 25
-  activarCrujidos: 0
-  tiempoMinimoCrujido: 8
-  tiempoMaximoCrujido: 20
 --- !u!1001 &441954919
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1958,73 +1957,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe10b0ab2d80dba4b9402f348a74945a, type: 3}
---- !u!1 &446686961
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 446686962}
-  - component: {fileID: 446686963}
-  m_Layer: 0
-  m_Name: AudioBosqueGeneral
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &446686962
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446686961}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &446686963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446686961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a55291c05ab56f4e97d3b689f8d20f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioAmbiente3D
-  sonidoViento: {fileID: 8300000, guid: 5ad32a032f519ec4ab0755f5ecd7d2a2, type: 3}
-  sonidoBuho: {fileID: 8300000, guid: 7635882a34a6c84438a7cf56744c940a, type: 3}
-  sonidoRafaga: {fileID: 8300000, guid: 3f2f84b09a18b6d45afcf21c62fd3a9f, type: 3}
-  sonidoAgua: {fileID: 0}
-  sonidoCrujido: {fileID: 8300000, guid: 37a41eb1ef9530341805186b165efef9, type: 3}
-  volumenViento: 0.45
-  volumenBuho: 0.35
-  volumenRafaga: 0.55
-  volumenAgua: 0.6
-  volumenCrujido: 0.8
-  distanciaMinima: 5
-  distanciaMaxima: 30
-  distanciaMinimaAgua: 20
-  distanciaMaximaAgua: 65
-  activarBuho: 1
-  tiempoMinimoBuho: 20
-  tiempoMaximoBuho: 40
-  activarRafaga: 1
-  tiempoMinimoRafaga: 12
-  tiempoMaximoRafaga: 25
-  activarCrujidos: 1
-  tiempoMinimoCrujido: 8
-  tiempoMaximoCrujido: 20
 --- !u!4 &450065330 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7328630292235524243, guid: c62cfed933a71cd44a891e456512b30c, type: 3}
@@ -2995,17 +2927,9 @@ PrefabInstance:
       propertyPath: screenOverlayCanvasGroup
       value: 
       objectReference: {fileID: 1085918566}
-    - target: {fileID: 5571381644943400046, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5871558747211418328, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_Layer
       value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 5871558747211418328, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6413560315260169269, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
       propertyPath: m_Layer
@@ -3067,14 +2991,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8372134184621246213, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3220439426502892978, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 177394642}
+    - targetCorrespondingSourceObject: {fileID: 3220439426502892978, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 177394641}
   m_SourcePrefab: {fileID: 100100000, guid: 8e39c6c31c22d0b41a8138b6484ffdce, type: 3}
 --- !u!1 &792065336
 GameObject:
@@ -7067,7 +6993,6 @@ SceneRoots:
   - {fileID: 296097510586747357}
   - {fileID: 5747111036365298901}
   - {fileID: 97759965}
-  - {fileID: 446686962}
   - {fileID: 274569476}
   - {fileID: 521130914}
   - {fileID: 692667993}
