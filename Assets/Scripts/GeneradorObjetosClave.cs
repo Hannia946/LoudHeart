@@ -4,57 +4,81 @@ using UnityEngine;
 public class GeneradorObjetosClave : MonoBehaviour
 {
     [Header("Objetos Clave (Prefabs)")]
-    [Tooltip("Arrastrar aquí los 5 objetos que el jugador debe encontrar")]
     public GameObject[] objetosClave;
 
     [Header("Posibles Locaciones")]
-    [Tooltip("Arrastra aquí los 20 puntos vacíos del mapa")]
     public Transform[] puntosDeAparicion;
+
+    [Header("Ajustes de Posición y Obstáculos")]
+    public float offsetAltura = 0.7f;
+    public float radioLibre = 1.2f;
 
     void Start()
     {
-        // La aparición ocurre justo al iniciar la partida
         AparecerObjetosAlAzar();
     }
 
     public void AparecerObjetosAlAzar()
     {
-        // Verificaciones de seguridad
-        if (objetosClave.Length != 5)
-        {
-            Debug.LogError("Error: asignar exactamente 5 objetos clave en el Inspector.");
-            return;
-        }
+        if (objetosClave.Length != 5 || puntosDeAparicion.Length < 5) return;
 
-        if (puntosDeAparicion.Length < 5)
-        {
-            Debug.LogError("Error: se necesitas al menos 5 puntos de aparición preestablecidos.");
-            return;
-        }
-
-        // 1. creamos una lista con los números del 0 al 19 (representando los 20 puntos)
         List<int> indicesDisponibles = new List<int>();
         for (int i = 0; i < puntosDeAparicion.Length; i++)
         {
             indicesDisponibles.Add(i);
         }
 
-        // 2. Iteramos por cada uno de los 5 objetos clave
         for (int i = 0; i < objetosClave.Length; i++)
         {
-            // Elegimos un índice al azar de los que aún están disponibles
             int indiceAleatorio = Random.Range(0, indicesDisponibles.Count);
-
-            // Obtenemos el número del punto de aparición real
             int puntoElegido = indicesDisponibles[indiceAleatorio];
 
-            // 3. Hacemos aparecer (instanciar) el objeto en ese punto
-            Instantiate(objetosClave[i], puntosDeAparicion[puntoElegido].position, puntosDeAparicion[puntoElegido].rotation);
+            Transform puntoTransform = puntosDeAparicion[puntoElegido];
+            Vector3 posicionFinal = ObtenerPosicionDespejada(puntoTransform.position);
 
-            // 4. Eliminamos este punto de la lista para que ningún otro objeto lo use
+            Instantiate(objetosClave[i], posicionFinal, puntoTransform.rotation);
             indicesDisponibles.RemoveAt(indiceAleatorio);
         }
 
-        Debug.Log("¡Los 5 objetos clave han aparecido en locaciones únicas!");
+        Debug.Log("¡Los 5 objetos clave han aparecido despejados de obstáculos!");
+    }
+
+    Vector3 ObtenerPosicionDespejada(Vector3 origenPunto)
+    {
+        Vector3 posicionBase = origenPunto;
+
+        Vector3 origenRayo = origenPunto + Vector3.up * 50f;
+        if (Physics.Raycast(origenRayo, Vector3.down, out RaycastHit hit, 100f))
+        {
+            posicionBase = hit.point;
+        }
+
+        Vector3 posicionAjustada = posicionBase;
+
+        // Prueba en círculo alrededor del punto si detecta un obstáculo
+        for (int intento = 0; intento < 8; intento++)
+        {
+            Vector3 offset = (intento == 0) ? Vector3.zero : Quaternion.Euler(0, intento * 45f, 0) * Vector3.forward * (intento * 0.8f);
+            Vector3 pruebaPosicion = posicionBase + offset;
+
+            Collider[] colisiones = Physics.OverlapSphere(pruebaPosicion + Vector3.up * 0.5f, radioLibre);
+            bool hayObstaculo = false;
+
+            foreach (Collider col in colisiones)
+            {
+                if (col is TerrainCollider || col.gameObject.name.ToLower().Contains("terrain")) continue;
+
+                hayObstaculo = true;
+                break;
+            }
+
+            if (!hayObstaculo)
+            {
+                posicionAjustada = pruebaPosicion;
+                break;
+            }
+        }
+
+        return posicionAjustada + Vector3.up * offsetAltura;
     }
 }
