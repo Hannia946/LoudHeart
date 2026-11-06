@@ -1,228 +1,105 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
-public class EstadoVitalExplorador : MonoBehaviour
+public class EstadoVitalExplorador : NetworkBehaviour
 {
-    // ============================================================
-    // VIDA
-    // ============================================================
-
     [Header("VIDA")]
+    [Min(1f)] public float vidaMaxima = 100f;
+    [Range(0f, 100f)] public float vidaActual = 60f;
+    [Min(0f)] public float curacionPorVenda = 30f;
 
-    [Min(1f)]
-    public float vidaMaxima = 100f;
-
-    [Range(0f, 100f)]
-    public float vidaActual = 60f;
-
-    [Min(0f)]
-    public float curacionPorVenda = 30f;
-
-
-    // ============================================================
-    // ENERGÍA
-    // ============================================================
-
-    [Header("ENERGÍA")]
-
-    [Min(1f)]
-    public float energiaMaxima = 100f;
-
-    [Range(0f, 100f)]
-    public float energiaActual = 50f;
-
-    [Min(0f)]
-    public float energiaPorComida = 25f;
-
-
-    // ============================================================
-    // BATERÍA
-    // ============================================================
+    [Header("ENERGÍA (sin uso)")]
+    [Min(1f)] public float energiaMaxima = 100f;
+    [Range(0f, 100f)] public float energiaActual = 50f;
 
     [Header("BATERÍA DE LA LINTERNA")]
-
-    [Min(1f)]
-    public float bateriaMaxima = 100f;
-
-    [Range(0f, 100f)]
-    public float bateriaActual = 40f;
-
-    [Min(0f)]
-    public float recargaPorPila = 40f;
-
-
-    // ============================================================
-    // LINTERNA REAL
-    // ============================================================
+    [Min(1f)] public float bateriaMaxima = 100f;
+    [Range(0f, 100f)] public float bateriaActual = 40f;
+    [Min(0f)] public float recargaPorPila = 40f;
 
     [Header("LINTERNA")]
-
     public Light luzLinterna;
+    [Min(0f)] public float consumoBateriaPorSegundo = 2f;
 
-    [Min(0f)]
-    public float consumoBateriaPorSegundo = 2f;
+    [Header("USO AUTOMÁTICO DE CONSUMIBLES")]
+    public PlayerInventoryManager inventario;
+    [Range(0f, 100f)] public float umbralVida = 40f;       // usa venda si la vida baja de aquí
+    [Range(0f, 100f)] public float umbralBateria = 25f;    // usa pila si la batería baja de aquí
+    [Min(0f)] public float enfriamientoUso = 1f;           // segundos entre usos
 
+    private float proximoUsoPermitido = 0f;
 
-    // ============================================================
-    // INICIALIZACIÓN
-    // ============================================================
-
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
-        vidaActual =
-            Mathf.Clamp(
-                vidaActual,
-                0f,
-                vidaMaxima
-            );
-
-        energiaActual =
-            Mathf.Clamp(
-                energiaActual,
-                0f,
-                energiaMaxima
-            );
-
-        bateriaActual =
-            Mathf.Clamp(
-                bateriaActual,
-                0f,
-                bateriaMaxima
-            );
+        vidaActual = Mathf.Clamp(vidaActual, 0f, vidaMaxima);
+        energiaActual = Mathf.Clamp(energiaActual, 0f, energiaMaxima);
+        bateriaActual = Mathf.Clamp(bateriaActual, 0f, bateriaMaxima);
     }
-
-
-    // ============================================================
-    // CONSUMO DE BATERÍA
-    // ============================================================
 
     private void Update()
     {
-        if (
-            luzLinterna == null ||
-            !luzLinterna.enabled
-        )
-        {
-            return;
-        }
+        if (!IsSpawned || !IsOwner) return;   // solo el dueño gasta y usa
+
+        ConsumirBateria();
+        UsoAutomatico();
+    }
+
+    private void ConsumirBateria()
+    {
+        if (luzLinterna == null || !luzLinterna.enabled) return;
 
         if (bateriaActual > 0f)
         {
-            bateriaActual -=
-                consumoBateriaPorSegundo *
-                Time.deltaTime;
-
-            bateriaActual =
-                Mathf.Max(
-                    bateriaActual,
-                    0f
-                );
+            bateriaActual = Mathf.Max(bateriaActual - consumoBateriaPorSegundo * Time.deltaTime, 0f);
         }
 
         if (bateriaActual <= 0f)
         {
             bateriaActual = 0f;
-
             luzLinterna.enabled = false;
-
-            Debug.LogWarning(
-                "[LINTERNA] Batería agotada."
-            );
+            Debug.LogWarning("[LINTERNA] Batería agotada.");
         }
     }
 
-
-    // ============================================================
-    // SANA
-    // ============================================================
-
-    public bool PuedeSanar()
+    private void UsoAutomatico()
     {
-        return vidaActual < vidaMaxima;
+        if (inventario == null || Time.time < proximoUsoPermitido) return;
+
+        if (vidaActual <= umbralVida && inventario.cantidadVendas > 0 && PuedeSanar())
+        {
+            inventario.UsarVenda();
+            Sanar();
+            proximoUsoPermitido = Time.time + enfriamientoUso;
+            return;
+        }
+
+        if (bateriaActual <= umbralBateria && inventario.cantidadPilas > 0 && PuedeRecargar())
+        {
+            inventario.UsarPila();
+            RecargarBateria();
+            proximoUsoPermitido = Time.time + enfriamientoUso;
+        }
     }
 
+    public bool PuedeSanar() { return vidaActual < vidaMaxima; }
 
     public void Sanar()
     {
-        float vidaAnterior =
-            vidaActual;
-
-        vidaActual =
-            Mathf.Min(
-                vidaActual + curacionPorVenda,
-                vidaMaxima
-            );
-
-        Debug.Log(
-            "[VIDA] " +
-            vidaAnterior.ToString("F0") +
-            " → " +
-            vidaActual.ToString("F0") +
-            " / " +
-            vidaMaxima.ToString("F0")
-        );
+        float anterior = vidaActual;
+        vidaActual = Mathf.Min(vidaActual + curacionPorVenda, vidaMaxima);
+        Debug.Log($"[VIDA] {anterior:F0} → {vidaActual:F0} / {vidaMaxima:F0}");
     }
 
-
-    // ============================================================
-    // COME
-    // ============================================================
-
-    public bool PuedeComer()
-    {
-        return energiaActual < energiaMaxima;
-    }
-
-
-    public void Comer()
-    {
-        float energiaAnterior =
-            energiaActual;
-
-        energiaActual =
-            Mathf.Min(
-                energiaActual + energiaPorComida,
-                energiaMaxima
-            );
-
-        Debug.Log(
-            "[ENERGÍA] " +
-            energiaAnterior.ToString("F0") +
-            " → " +
-            energiaActual.ToString("F0") +
-            " / " +
-            energiaMaxima.ToString("F0")
-        );
-    }
-
-
-    // ============================================================
-    // CARGA
-    // ============================================================
-
-    public bool PuedeRecargar()
-    {
-        return bateriaActual < bateriaMaxima;
-    }
-
+    public bool PuedeRecargar() { return bateriaActual < bateriaMaxima; }
 
     public void RecargarBateria()
     {
-        float bateriaAnterior =
-            bateriaActual;
+        float anterior = bateriaActual;
+        bateriaActual = Mathf.Min(bateriaActual + recargaPorPila, bateriaMaxima);
 
-        bateriaActual =
-            Mathf.Min(
-                bateriaActual + recargaPorPila,
-                bateriaMaxima
-            );
+        if (luzLinterna != null && bateriaActual > 0f)
+            luzLinterna.enabled = true;   // por si se había apagado al llegar a 0
 
-        Debug.Log(
-            "[BATERÍA] " +
-            bateriaAnterior.ToString("F0") +
-            " → " +
-            bateriaActual.ToString("F0") +
-            " / " +
-            bateriaMaxima.ToString("F0")
-        );
+        Debug.Log($"[BATERÍA] {anterior:F0} → {bateriaActual:F0} / {bateriaMaxima:F0}");
     }
 }
