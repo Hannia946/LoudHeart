@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &456969031149641941
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2064457902207197692}
+  - component: {fileID: 1725818181570694557}
+  m_Layer: 0
+  m_Name: GeneradorConsumibles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2064457902207197692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456969031149641941}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11, y: 4.66, z: 43}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1725818181570694557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456969031149641941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4170015165cd7484d8a17aae07bf9375, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GeneradorConsumibles
+  prefabsConsumibles:
+  - {fileID: 6193632336301627365, guid: 1bd7b6a4cb1c67b4da86fb236aa45ceb, type: 3}
+  - {fileID: 1883590959010484324, guid: 9238e54bb0917604a840cd2161429285, type: 3}
+  - {fileID: 5853394621244040759, guid: 1a8112da9fe5c8c42a0a7aa737c0d225, type: 3}
+  - {fileID: 3366759691546949157, guid: f2c8b78715ca4d4439ce369e26652366, type: 3}
+  - {fileID: 5988373437169818013, guid: 195037554360eff4b949ac86e3ab5221, type: 3}
+  - {fileID: 6744776390143588639, guid: f10d68ae3159ae64f8f6b5d84868b309, type: 3}
+  cantidadPorTipo: 10
+  tamanoArea: {x: 300, y: 0, z: 300}
+  capaTerreno:
+    serializedVersion: 2
+    m_Bits: 1
+  offsetAltura: 0.8
+  radioLibre: 1
