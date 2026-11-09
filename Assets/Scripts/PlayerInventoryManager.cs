@@ -1,18 +1,32 @@
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerInventoryManager : MonoBehaviour
+public class PlayerInventoryManager : NetworkBehaviour
 {
     [Header("Inventario de Consumibles")]
     public int cantidadVendas = 0;
     public int cantidadPilas = 0;
-    public int cantidadComida = 0;
 
-    [Header("Objetos Clave Recolectados (Meta: 5)")]
-    public int objetosClaveRecolectados = 0;
+    // Sin uso: se conserva solo para que otros scripts (ItemHighlight, etc.) sigan compilando
+    [HideInInspector] public KeyItem objetoClaveEnMirada = null;
 
-    [Header("Referencia al Objeto Clave Actual en Gaze Lock")]
-    public KeyItem objetoClaveEnMirada = null;
+    // ===================== ENTRADA DESDE EL SERVIDOR =====================
+
+    // Lo llama el consumible, solo en el servidor
+    public void RecibirConsumible(ConsumableItem.ConsumableType tipo, int cantidad)
+    {
+        AgregarConsumibleClientRpc(tipo, cantidad, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+        });
+    }
+
+    [ClientRpc]
+    private void AgregarConsumibleClientRpc(ConsumableItem.ConsumableType tipo, int cantidad, ClientRpcParams p = default)
+    {
+        AgregarConsumible(tipo, cantidad);   // se ejecuta solo en el dueño
+    }
 
     public void AgregarConsumible(ConsumableItem.ConsumableType tipo, int cantidad)
     {
@@ -28,79 +42,29 @@ public class PlayerInventoryManager : MonoBehaviour
                 Debug.Log($"[Inventario] Pilas: {cantidadPilas}");
                 break;
 
-            case ConsumableItem.ConsumableType.Comida:
-                cantidadComida += cantidad;
-                Debug.Log($"[Inventario] Comida: {cantidadComida}");
-                break;
-
             case ConsumableItem.ConsumableType.HongoSpeed:
                 StartCoroutine(ActivarSuperVelocidad(5f));
+                var boost = GetComponent<SpeedBoostEffect>();
+                if (boost != null) boost.ActivarEfectoVelocidad();
                 break;
         }
-
     }
+
+    // ===================== USO =====================
+
     public bool UsarVenda()
     {
-        if (cantidadVendas <= 0)
-        {
-            Debug.LogWarning(
-                "[SANA] No hay vendas disponibles."
-            );
-
-            return false;
-        }
-
+        if (cantidadVendas <= 0) return false;
         cantidadVendas--;
-
-        Debug.Log(
-            "[SANA] Venda utilizada. Vendas restantes: " +
-            cantidadVendas
-        );
-
+        Debug.Log($"[SANA] Venda utilizada automáticamente. Restantes: {cantidadVendas}");
         return true;
     }
-    public bool UsarComida()
-    {
-        if (cantidadComida <= 0)
-        {
-            Debug.LogWarning(
-                "[COME] No hay comida disponible."
-            );
-
-            return false;
-        }
-
-        cantidadComida--;
-
-        Debug.Log(
-            "[COME] Comida utilizada. Comida restante: " +
-            cantidadComida
-        );
-
-        return true;
-    }
-    // ============================================================
-    // USAR PILA - CARGA
-    // ============================================================
 
     public bool UsarPila()
     {
-        if (cantidadPilas <= 0)
-        {
-            Debug.LogWarning(
-                "[CARGA] No hay pilas disponibles."
-            );
-
-            return false;
-        }
-
+        if (cantidadPilas <= 0) return false;
         cantidadPilas--;
-
-        Debug.Log(
-            "[CARGA] Pila utilizada. Pilas restantes: " +
-            cantidadPilas
-        );
-
+        Debug.Log($"[CARGA] Pila utilizada automáticamente. Restantes: {cantidadPilas}");
         return true;
     }
 
@@ -109,36 +73,5 @@ public class PlayerInventoryManager : MonoBehaviour
         Debug.Log("¡Supervelocidad activada por Hongo! (5 segundos)");
         yield return new WaitForSeconds(duracion);
         Debug.Log("Supervelocidad terminada.");
-    }
-
-    public bool EjecutarComandoToma()
-    {
-        if (
-            objetoClaveEnMirada != null &&
-            objetoClaveEnMirada.EstaFijado()
-        )
-        {
-            objetosClaveRecolectados++;
-
-            Debug.Log(
-                "[TOMA] Objeto clave '" +
-                objetoClaveEnMirada.nombreObjetoClave +
-                "' recolectado. Total: " +
-                objetosClaveRecolectados +
-                "/5"
-            );
-
-            objetoClaveEnMirada.RecogerObjeto();
-
-            objetoClaveEnMirada = null;
-
-            return true;
-        }
-
-        Debug.LogWarning(
-            "[TOMA] Rechazado: no hay ningún objeto clave fijado con Gaze Lock."
-        );
-
-        return false;
     }
 }

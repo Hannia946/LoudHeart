@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-
-public class KeyItem : MonoBehaviour
+using Unity.Netcode;
+public class KeyItem : NetworkBehaviour
 {
     [Header("Información del Objeto Clave")]
     public string nombreObjetoClave;
@@ -12,6 +12,7 @@ public class KeyItem : MonoBehaviour
     [SerializeField] private Outline outlineComponent;
 
     private bool estaFijado = false;
+    private bool recogido = false;
 
     private void Start()
     {
@@ -42,13 +43,27 @@ public class KeyItem : MonoBehaviour
         return estaFijado;
     }
 
-    public void RecogerObjeto()
+    // Recolección automática: solo decide el servidor
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!IsServer || recogido) return;
+        if (other.GetComponentInParent<PlayerInventoryManager>() == null) return;
+
+        recogido = true;
+
+        if (GestorPartida.Instancia != null)
+            GestorPartida.Instancia.RegistrarObjetoClave();
+
+        Debug.Log($"[OBJETO CLAVE] '{nombreObjetoClave}' recolectado.");
+
+        ReproducirSonidoClientRpc();
+        NetworkObject.Despawn();   // desaparece para todos
+    }
+
+    [ClientRpc]
+    private void ReproducirSonidoClientRpc()
     {
         if (sonidoRecoleccionUnico != null)
-        {
             AudioSource.PlayClipAtPoint(sonidoRecoleccionUnico, transform.position);
-        }
-
-        Destroy(gameObject);
     }
 }

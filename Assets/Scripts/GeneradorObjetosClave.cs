@@ -1,60 +1,118 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class GeneradorObjetosClave : MonoBehaviour
+public class GeneradorObjetosClave : NetworkBehaviour
 {
-    [Header("Objetos Clave (Prefabs)")]
-    [Tooltip("Arrastrar aquí los 5 objetos que el jugador debe encontrar")]
+    [Header("Objetos Clave (Prefabs con NetworkObject)")]
+    [Tooltip("Arrastra aquí los 5 prefabs de los objetos clave")]
     public GameObject[] objetosClave;
 
-    [Header("Posibles Locaciones")]
-    [Tooltip("Arrastra aquí los 20 puntos vacíos del mapa")]
-    public Transform[] puntosDeAparicion;
+    [Header("Configuración del Área")]
+    public Vector3 tamanoArea = new Vector3(300f, 0f, 300f);
+    public LayerMask capaTerreno;
 
-    void Start()
+    [Header("Ajustes de Posición y Obstáculos")]
+    [Tooltip("Altura sobre el suelo para evitar que queden enterrados")]
+    public float offsetAltura = 0.5f;
+
+    [Tooltip("Radio libre alrededor del objeto para evitar colisiones con rocas/árboles")]
+    public float radioLibre = 1.2f;
+
+    public override void OnNetworkSpawn()
     {
-        // La aparición ocurre justo al iniciar la partida
-        AparecerObjetosAlAzar();
+        // Solo el servidor o host calcula las posiciones y spawnea en red
+        if (!IsServer) return;
+
+        AparecerObjetosClave();
     }
 
-    public void AparecerObjetosAlAzar()
+    public void AparecerObjetosClave()
     {
-        // Verificaciones de seguridad
-        if (objetosClave.Length != 5)
+        if (objetosClave == null || objetosClave.Length == 0)
         {
-            Debug.LogError("Error: asignar exactamente 5 objetos clave en el Inspector.");
+            Debug.LogError("Error: No hay prefabs asignados en GeneradorObjetosClave.");
             return;
         }
 
-        if (puntosDeAparicion.Length < 5)
-        {
-            Debug.LogError("Error: se necesitas al menos 5 puntos de aparición preestablecidos.");
-            return;
-        }
+        int totalGenerados = 0;
 
-        // 1. creamos una lista con los números del 0 al 19 (representando los 20 puntos)
-        List<int> indicesDisponibles = new List<int>();
-        for (int i = 0; i < puntosDeAparicion.Length; i++)
-        {
-            indicesDisponibles.Add(i);
-        }
-
-        // 2. Iteramos por cada uno de los 5 objetos clave
         for (int i = 0; i < objetosClave.Length; i++)
         {
-            // Elegimos un índice al azar de los que aún están disponibles
-            int indiceAleatorio = Random.Range(0, indicesDisponibles.Count);
+            if (objetosClave[i] == null) continue;
 
-            // Obtenemos el número del punto de aparición real
-            int puntoElegido = indicesDisponibles[indiceAleatorio];
+            Vector3 puntoValido = ObtenerPuntoEnSueloDespejado();
 
-            // 3. Hacemos aparecer (instanciar) el objeto en ese punto
-            Instantiate(objetosClave[i], puntosDeAparicion[puntoElegido].position, puntosDeAparicion[puntoElegido].rotation);
+            if (puntoValido != Vector3.zero)
+            {
+                // Posición corregida con el offset
+                Vector3 posicionFinal = puntoValido + Vector3.up * offsetAltura;
 
-            // 4. Eliminamos este punto de la lista para que ningún otro objeto lo use
-            indicesDisponibles.RemoveAt(indiceAleatorio);
+                // Instanciar en el servidor
+                GameObject objeto = Instantiate(objetosClave[i], posicionFinal, Quaternion.identity);
+
+                // Replicar a todos los clientes conectados
+                NetworkObject netObj = objeto.GetComponent<NetworkObject>();
+                if (netObj != null)
+                {
+                    netObj.Spawn(true);
+                    totalGenerados++;
+                }
+                else
+                {
+                    Debug.LogError($"El prefab {objetosClave[i].name} no tiene un componente NetworkObject.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"No se encontró una posición segura en el terreno para {objetosClave[i].name}");
+            }
         }
 
-        Debug.Log("¡Los 5 objetos clave han aparecido en locaciones únicas!");
+        Debug.Log($"¡Se han generado {totalGenerados}/{objetosClave.Length} objetos clave sincronizados y sobre terreno firme!");
+    }
+
+    private Vector3 ObtenerPuntoEnSueloDespejado()
+    {
+        Vector3 centro = transform.position;
+
+        for (int intento = 0; intento < 100; intento++)
+        {
+            float x = Random.Range(centro.x - tamanoArea.x / 2f, centro.x + tamanoArea.x / 2f);
+            float z = Random.Range(centro.z - tamanoArea.z / 2f, centro.z + tamanoArea.z / 2f);
+
+            // Rayo lanzado desde arriba filtrando exclusivamente por capaTerreno
+            Vector3 origenRayo = new Vector3(x, centro.y + 150f, z);
+
+            if (Physics.Raycast(origenRayo, Vector3.down, out RaycastHit hit, 500f, capaTerreno))
+            {
+                // Verifica si hay obstáculos en el radio libre
+                Collider[] colisiones = Physics.OverlapSphere(hit.point + Vector3.up * 0.5f, radioLibre);
+
+                bool hayObstaculo = false;
+                foreach (Collider col in colisiones)
+                {
+                    // Si toca algo ajeno a la capa del suelo, es obstáculo
+                    if (((1 << col.gameObject.layer) & capaTerreno) == 0)
+                    {
+                        hayObstaculo = true;
+                        break;
+                    }
+                }
+
+                if (!hayObstaculo)
+                {
+                    return hit.point;
+                }
+            }
+        }
+
+        return Vector3.zero;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(transform.position, tamanoArea);
     }
 }
