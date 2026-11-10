@@ -102,4 +102,25 @@ public class EstadoVitalExplorador : NetworkBehaviour
 
         Debug.Log($"[BATERÍA] {anterior:F0} → {bateriaActual:F0} / {bateriaMaxima:F0}");
     }
+
+    public void RecibirDanoDesdeServidor(float dano)
+    {
+        if (!IsServer) return;
+
+        RecibirDanoClientRpc(dano, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+        });
+    }
+
+    [ClientRpc]
+    private void RecibirDanoClientRpc(float dano, ClientRpcParams p = default)
+    {
+        float anterior = vidaActual;
+        vidaActual = Mathf.Max(vidaActual - dano, 0f);
+        Debug.Log($"[VIDA] Golpe del monstruo: {anterior:F0} → {vidaActual:F0} / {vidaMaxima:F0}");
+
+        if (vidaActual <= 0f)
+            Debug.LogWarning("[VIDA] El jugador se quedó sin vida.");   // pendiente: definir qué pasa
+    }
 }
