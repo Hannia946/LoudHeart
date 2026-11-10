@@ -192,7 +192,7 @@ public class MonstruoIA : NetworkBehaviour
     }
 
     // Lo llama el jugador que ilumina al monstruo con su linterna
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void RecibirLuzServerRpc()
     {
         if (Time.time < inmuneLuzHasta) return;   // evita aturdirlo sin parar
