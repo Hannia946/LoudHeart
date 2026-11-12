@@ -5,114 +5,106 @@ using UnityEngine;
 public class GeneradorObjetosClave : NetworkBehaviour
 {
     [Header("Objetos Clave (Prefabs con NetworkObject)")]
-    [Tooltip("Arrastra aquí los 5 prefabs de los objetos clave")]
     public GameObject[] objetosClave;
 
-    [Header("Configuración del Área")]
-    public Vector3 tamanoArea = new Vector3(300f, 0f, 300f);
+    [Header("Puntos de Spawn Predefinidos")]
+    [Tooltip("Arrastra aquí el GameObject contenedor '20puntosSpawn'")]
+    public Transform contenedorPuntosSpawn;
+
+    [Header("Ajustes de Posición")]
+    public float offsetAltura = 0.5f;
     public LayerMask capaTerreno;
 
-    [Header("Ajustes de Posición y Obstáculos")]
-    [Tooltip("Altura sobre el suelo para evitar que queden enterrados")]
-    public float offsetAltura = 0.5f;
+    private List<Transform> listaPuntos = new List<Transform>();
+    private bool yaGenerado = false;
 
-    [Tooltip("Radio libre alrededor del objeto para evitar colisiones con rocas/árboles")]
-    public float radioLibre = 1.2f;
+    private void Start()
+    {
+        // Si no se ha iniciado sesión en red, aparece en local (Modo Play)
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
+        {
+            AparecerObjetosClave();
+        }
+    }
 
     public override void OnNetworkSpawn()
     {
-        // Solo el servidor o host calcula las posiciones y spawnea en red
-        if (!IsServer) return;
+        // En partida en red, solo ejecuta en el Servidor / Host
+        if (!IsServer || yaGenerado) return;
 
         AparecerObjetosClave();
     }
 
     public void AparecerObjetosClave()
     {
-        if (objetosClave == null || objetosClave.Length == 0)
+        if (yaGenerado) return;
+
+        // Carga los 20 puntos hijos automáticamente si se asignó el contenedor
+        if (contenedorPuntosSpawn != null && listaPuntos.Count == 0)
         {
-            Debug.LogError("Error: No hay prefabs asignados en GeneradorObjetosClave.");
+            foreach (Transform hijo in contenedorPuntosSpawn)
+            {
+                listaPuntos.Add(hijo);
+            }
+        }
+
+        if (objetosClave == null || objetosClave.Length == 0 || listaPuntos.Count == 0)
+        {
+            Debug.LogError("Error: Asegúrate de tener prefabs asignados y el contenedor '20puntosSpawn' vinculado.");
             return;
         }
 
+        // Copia de la lista para ir eliminando puntos ya usados (evita duplicados)
+        List<Transform> disponibles = new List<Transform>(listaPuntos);
         int totalGenerados = 0;
 
         for (int i = 0; i < objetosClave.Length; i++)
         {
-            if (objetosClave[i] == null) continue;
+            if (objetosClave[i] == null || disponibles.Count == 0) continue;
 
-            Vector3 puntoValido = ObtenerPuntoEnSueloDespejado();
+            // Selecciona un punto al azar de los 20
+            int indice = Random.Range(0, disponibles.Count);
+            Transform puntoElegido = disponibles[indice];
+            disponibles.RemoveAt(indice);
 
-            if (puntoValido != Vector3.zero)
+            // Ajusta la altura exacta al nivel del suelo
+            Vector3 posicionFinal = CalcularAlturaSuelo(puntoElegido.position);
+
+            GameObject objeto = Instantiate(objetosClave[i], posicionFinal, Quaternion.identity);
+
+            // Sincronización en red
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && IsServer)
             {
-                // Posición corregida con el offset
-                Vector3 posicionFinal = puntoValido + Vector3.up * offsetAltura;
-
-                // Instanciar en el servidor
-                GameObject objeto = Instantiate(objetosClave[i], posicionFinal, Quaternion.identity);
-
-                // Replicar a todos los clientes conectados
                 NetworkObject netObj = objeto.GetComponent<NetworkObject>();
                 if (netObj != null)
                 {
                     netObj.Spawn(true);
-                    totalGenerados++;
-                }
-                else
-                {
-                    Debug.LogError($"El prefab {objetosClave[i].name} no tiene un componente NetworkObject.");
                 }
             }
-            else
-            {
-                Debug.LogWarning($"No se encontró una posición segura en el terreno para {objetosClave[i].name}");
-            }
+
+            totalGenerados++;
         }
 
-        Debug.Log($"¡Se han generado {totalGenerados}/{objetosClave.Length} objetos clave sincronizados y sobre terreno firme!");
+        yaGenerado = true;
+        Debug.Log($"¡Se han generado {totalGenerados}/{objetosClave.Length} objetos clave en los puntos de spawn!");
     }
 
-    private Vector3 ObtenerPuntoEnSueloDespejado()
+    private Vector3 CalcularAlturaSuelo(Vector3 origen)
     {
-        Vector3 centro = transform.position;
-
-        for (int intento = 0; intento < 100; intento++)
+        // Intenta ajustar la altura exacta lanzando un Raycast hacia abajo
+        Vector3 rayoOrigen = new Vector3(origen.x, origen.y + 50f, origen.z);
+        if (Physics.Raycast(rayoOrigen, Vector3.down, out RaycastHit hit, 100f, capaTerreno))
         {
-            float x = Random.Range(centro.x - tamanoArea.x / 2f, centro.x + tamanoArea.x / 2f);
-            float z = Random.Range(centro.z - tamanoArea.z / 2f, centro.z + tamanoArea.z / 2f);
-
-            // Rayo lanzado desde arriba filtrando exclusivamente por capaTerreno
-            Vector3 origenRayo = new Vector3(x, centro.y + 150f, z);
-
-            if (Physics.Raycast(origenRayo, Vector3.down, out RaycastHit hit, 500f, capaTerreno))
-            {
-                // Verifica si hay obstáculos en el radio libre
-                Collider[] colisiones = Physics.OverlapSphere(hit.point + Vector3.up * 0.5f, radioLibre);
-
-                bool hayObstaculo = false;
-                foreach (Collider col in colisiones)
-                {
-                    // Si toca algo ajeno a la capa del suelo, es obstáculo
-                    if (((1 << col.gameObject.layer) & capaTerreno) == 0)
-                    {
-                        hayObstaculo = true;
-                        break;
-                    }
-                }
-
-                if (!hayObstaculo)
-                {
-                    return hit.point;
-                }
-            }
+            return hit.point + Vector3.up * offsetAltura;
         }
 
-        return Vector3.zero;
-    }
+        // Ajuste con el Terrain activo como alternativa
+        if (Terrain.activeTerrain != null)
+        {
+            float altura = Terrain.activeTerrain.SampleHeight(origen) + Terrain.activeTerrain.transform.position.y;
+            return new Vector3(origen.x, altura + offsetAltura, origen.z);
+        }
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position, tamanoArea);
+        return origen + Vector3.up * offsetAltura;
     }
 }
