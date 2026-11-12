@@ -1,7 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 public class PantallaHistoriaController : MonoBehaviour
@@ -25,122 +25,207 @@ public class PantallaHistoriaController : MonoBehaviour
     public float velocidadEscritura = 0.03f;
     public float pausaEntreSecciones = 0.3f;
 
-    // Textos narrativos (misionFull ahora tiene saltos dobles entre ítems para mayor espacio)
+    // Textos narrativos
     private string historiaFull = "Tu perrito se perdió en el bosque.\nSolo puedes verlo a través de una cámara.\n\nGuíalo con tu voz: cada comando puede salvarle la vida.";
-    private string misionFull = "<color=#00FF00>MISIÓN</color>\n\n<color=#FFFF00>PILAS</color> mantienen encendida su linterna.\n\n<color=#FF0000>VENDAS</color> le devuelven la vida.\n\n<color=#FFA500>COMIDA</color> le da fuerzas para seguir.\n\n<color=#00FF00>VIDA</color> no puede llegar a cero.";
+    private string misionFull = "<color=#00FF00>MISIÓN</color>\n\n<color=#FFFF00>PILAS</color> mantienen encendida su linterna.\n\n<color=#FF0000>VENDAS</color> le devuelven la vida.\n\n<color=#00FF00>VIDA</color> no puede llegar a cero.";
     private string comandosFull = "<color=#00FF00>COMANDOS DE VOZ</color>\n\n<size=120%><color=#00FF00>AVANZA</color></size>\nCamina hacia adelante.\n\n<size=120%><color=#00FF00>ALTO</color></size>\nSe detiene y se queda quieto.\n\n<size=120%><color=#00FF00>TROTA</color></size>\nCorre para escapar del monstruo.";
     private string objetivoFull = "<color=#00FF00>OBJETIVO</color>   Encuentra los 5 juguetes y huye.";
 
-    private Coroutine corrutinaAnimacion;
-    private bool estaEscribiendo = false;
+    private void Awake()
+    {
+        PrepararUIYRaycasts();
+        ConectarBotonesSiFaltan();
+    }
 
-    void OnEnable()
+    private void OnEnable()
     {
         IniciarSecuencia();
     }
 
-    public void IniciarSecuencia()
+    private void Update()
     {
-        if (corrutinaAnimacion != null) StopCoroutine(corrutinaAnimacion);
-        corrutinaAnimacion = StartCoroutine(EscribirPantalla());
+        // Evita que Jugador_Pruebas bloquee el mouse mientras esta pantalla está abierta
+        if (Cursor.lockState != CursorLockMode.None || !Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
-    IEnumerator EscribirPantalla()
+    private void PrepararUIYRaycasts()
     {
-        estaEscribiendo = true;
+        // 1. Asegurar GraphicRaycaster en el Canvas
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas != null && canvas.GetComponent<GraphicRaycaster>() == null)
+        {
+            canvas.gameObject.AddComponent<GraphicRaycaster>();
+        }
 
-        // Estado inicial de botones
+        // 2. Asegurar que exista un EventSystem en la escena
+        if (FindFirstObjectByType<EventSystem>() == null)
+        {
+            GameObject es = new GameObject("EventSystem");
+            es.AddComponent<EventSystem>();
+            es.AddComponent<StandaloneInputModule>();
+        }
+
+        // 3. Desactivar Raycast Target en imágenes decorativas y textos para que no tapen los botones
+        Image[] imagenes = GetComponentsInChildren<Image>(true);
+        foreach (Image img in imagenes)
+        {
+            if (img.GetComponent<Button>() == null)
+            {
+                img.raycastTarget = false;
+            }
+        }
+
+        TMP_Text[] textos = GetComponentsInChildren<TMP_Text>(true);
+        foreach (TMP_Text txt in textos)
+        {
+            if (txt.GetComponentInParent<Button>() == null)
+            {
+                txt.raycastTarget = false;
+            }
+        }
+    }
+
+    private void ConectarBotonesSiFaltan()
+    {
+        // Solo conecta por código si no está asignado ya en el Inspector (evita doble clic)
+        if (botonSaltar != null && botonSaltar.onClick.GetPersistentEventCount() == 0)
+        {
+            botonSaltar.onClick.RemoveAllListeners();
+            botonSaltar.onClick.AddListener(SaltarAnimacion);
+        }
+
+        if (botonVolverAver != null && botonVolverAver.onClick.GetPersistentEventCount() == 0)
+        {
+            botonVolverAver.onClick.RemoveAllListeners();
+            botonVolverAver.onClick.AddListener(VolverAVer);
+        }
+    }
+
+    public void IniciarSecuencia()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        StopAllCoroutines();
+        StartCoroutine(EscribirPantalla());
+    }
+
+    private IEnumerator EscribirPantalla()
+    {
+        // 1. Estado inicial de botones
         if (botonSaltar != null) botonSaltar.gameObject.SetActive(true);
         if (botonVolverAver != null) botonVolverAver.gameObject.SetActive(false);
         if (botonComenzar != null) botonComenzar.gameObject.SetActive(false);
 
-        // Ocultar marcos al inicio
+        // 2. Estado inicial de marcos
         if (marcoComandos != null) marcoComandos.SetActive(false);
         if (marcoObjetivo != null) marcoObjetivo.SetActive(false);
 
-        // Ocultar textos
-        OcultarTexto(textoHistoria, historiaFull);
-        OcultarTexto(textoMision, misionFull);
-        OcultarTexto(textoComandos, comandosFull);
-        OcultarTexto(textoObjetivo, objetivoFull);
+        // 3. Limpiar textos al inicio
+        LimpiarTexto(textoHistoria);
+        LimpiarTexto(textoMision);
+        LimpiarTexto(textoComandos);
+        LimpiarTexto(textoObjetivo);
 
-        // Esperar a que el Canvas termine de inicializarse en el motor sin requerir clics
-        yield return new WaitForEndOfFrame();
+        // Esperar un frame normal (no depende de que haya una cámara renderizando)
+        yield return null;
 
-        // 1. Escribir Historia
-        if (textoHistoria != null) yield return StartCoroutine(EscribirTexto(textoHistoria));
-        yield return new WaitForSeconds(pausaEntreSecciones);
+        // 4. Secuencia de escritura
+        if (textoHistoria != null) yield return StartCoroutine(EscribirTexto(textoHistoria, historiaFull));
+        yield return EsperarSegundosReales(pausaEntreSecciones);
 
-        // 2. Escribir Misión
-        if (textoMision != null) yield return StartCoroutine(EscribirTexto(textoMision));
-        yield return new WaitForSeconds(pausaEntreSecciones);
+        if (textoMision != null) yield return StartCoroutine(EscribirTexto(textoMision, misionFull));
+        yield return EsperarSegundosReales(pausaEntreSecciones);
 
-        // 3. Mostrar Marco de Comandos y escribir texto
         if (marcoComandos != null) marcoComandos.SetActive(true);
-        yield return new WaitForSeconds(0.15f);
-        if (textoComandos != null) yield return StartCoroutine(EscribirTexto(textoComandos));
-        yield return new WaitForSeconds(pausaEntreSecciones);
+        yield return EsperarSegundosReales(0.15f);
+        if (textoComandos != null) yield return StartCoroutine(EscribirTexto(textoComandos, comandosFull));
+        yield return EsperarSegundosReales(pausaEntreSecciones);
 
-        // 4. Mostrar Marco de Objetivo y escribir texto
         if (marcoObjetivo != null) marcoObjetivo.SetActive(true);
-        yield return new WaitForSeconds(0.15f);
-        if (textoObjetivo != null) yield return StartCoroutine(EscribirTexto(textoObjetivo));
+        yield return EsperarSegundosReales(0.15f);
+        if (textoObjetivo != null) yield return StartCoroutine(EscribirTexto(textoObjetivo, objetivoFull));
 
         FinalizarEscritura();
     }
 
-    private void OcultarTexto(TMP_Text componenteTexto, string contenido)
+    private IEnumerator EsperarSegundosReales(float segundos)
     {
-        if (componenteTexto == null) return;
-        componenteTexto.text = contenido;
-        componenteTexto.maxVisibleCharacters = 0;
+        float transcurrido = 0f;
+        while (transcurrido < segundos)
+        {
+            transcurrido += Time.unscaledDeltaTime;
+            yield return null;
+        }
     }
 
-    IEnumerator EscribirTexto(TMP_Text componenteTexto)
+    private void LimpiarTexto(TMP_Text comp)
     {
-        if (componenteTexto == null) yield break;
+        if (comp == null) return;
+        comp.text = "";
+        comp.maxVisibleCharacters = 0;
+    }
 
-        // Forzar la actualización del Canvas y de la malla del texto
-        Canvas.ForceUpdateCanvases();
-        componenteTexto.ForceMeshUpdate();
+    private IEnumerator EscribirTexto(TMP_Text comp, string contenido)
+    {
+        if (comp == null) yield break;
 
-        int totalCaracteres = componenteTexto.textInfo.characterCount;
+        comp.text = contenido;
+        comp.maxVisibleCharacters = 0;
+
+        yield return null;
+        comp.ForceMeshUpdate();
+
+        int totalCaracteres = comp.textInfo.characterCount;
+
+        if (totalCaracteres <= 0)
+        {
+            comp.maxVisibleCharacters = 99999;
+            yield break;
+        }
 
         for (int i = 0; i <= totalCaracteres; i++)
         {
-            componenteTexto.maxVisibleCharacters = i;
-            yield return new WaitForSeconds(velocidadEscritura);
+            comp.maxVisibleCharacters = i;
+            yield return EsperarSegundosReales(velocidadEscritura);
         }
+
+        comp.maxVisibleCharacters = 99999;
     }
 
     public void SaltarAnimacion()
     {
-        if (!estaEscribiendo) return;
-
         StopAllCoroutines();
 
         if (marcoComandos != null) marcoComandos.SetActive(true);
         if (marcoObjetivo != null) marcoObjetivo.SetActive(true);
 
-        MostrarTodoElTexto(textoHistoria, historiaFull);
-        MostrarTodoElTexto(textoMision, misionFull);
-        MostrarTodoElTexto(textoComandos, comandosFull);
-        MostrarTodoElTexto(textoObjetivo, objetivoFull);
+        MostrarTextoCompleto(textoHistoria, historiaFull);
+        MostrarTextoCompleto(textoMision, misionFull);
+        MostrarTextoCompleto(textoComandos, comandosFull);
+        MostrarTextoCompleto(textoObjetivo, objetivoFull);
 
         FinalizarEscritura();
     }
 
-    private void MostrarTodoElTexto(TMP_Text componenteTexto, string contenido)
+    public void VolverAVer()
     {
-        if (componenteTexto == null) return;
-        componenteTexto.text = contenido;
-        componenteTexto.maxVisibleCharacters = 99999;
+        IniciarSecuencia();
+    }
+
+    private void MostrarTextoCompleto(TMP_Text comp, string contenido)
+    {
+        if (comp == null) return;
+        comp.text = contenido;
+        comp.maxVisibleCharacters = 99999;
     }
 
     private void FinalizarEscritura()
     {
-        estaEscribiendo = false;
-
         if (botonSaltar != null) botonSaltar.gameObject.SetActive(false);
         if (botonVolverAver != null) botonVolverAver.gameObject.SetActive(true);
         if (botonComenzar != null) botonComenzar.gameObject.SetActive(true);
