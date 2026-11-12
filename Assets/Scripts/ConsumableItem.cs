@@ -14,17 +14,33 @@ public class ConsumableItem : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsServer || recogido) return;   // solo decide el servidor
+        if (recogido) return;
 
         var inventario = other.GetComponentInParent<PlayerInventoryManager>();
         if (inventario == null) return;
 
-        recogido = true;
+        // Solo el jugador dueño de este personaje inicia la recolección
+        if (inventario.IsOwner)
+        {
+            recogido = true;
+            RecogerConsumibleServerRpc(inventario.NetworkObjectId);
+        }
+    }
 
-        inventario.RecibirConsumible(tipoConsumible, cantidad);   // avisa al dueño
-        ReproducirSonidoClientRpc();
-        NetworkObject.Despawn();
-
+    [ServerRpc(RequireOwnership = false)]
+    private void RecogerConsumibleServerRpc(ulong playerNetworkId)
+    {
+        // El servidor localiza al jugador y actualiza su inventario en la red
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerNetworkId, out var playerObject))
+        {
+            var inventario = playerObject.GetComponent<PlayerInventoryManager>();
+            if (inventario != null)
+            {
+                inventario.RecibirConsumible(tipoConsumible, cantidad);
+                ReproducirSonidoClientRpc();
+                NetworkObject.Despawn();
+            }
+        }
     }
 
     [ClientRpc]
