@@ -48,17 +48,24 @@ public class KeyItem : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsServer || recogido) return;
+
+        // Solo se recoge mientras la partida está en curso
+        // (evita llevarse un objeto al aparecer, durante la historia o tras la derrota)
+        if (GestorPartida.Instancia != null && !GestorPartida.Instancia.EnCurso) return;
+
         if (other.GetComponentInParent<PlayerInventoryManager>() == null) return;
 
         recogido = true;
 
         if (GestorPartida.Instancia != null)
             GestorPartida.Instancia.RegistrarObjetoClave();
+        else
+            Debug.LogWarning("[OBJETO CLAVE] No hay GestorPartida en la escena: el objeto desaparece pero no suma al contador.");
 
         Debug.Log($"[OBJETO CLAVE] '{nombreObjetoClave}' recolectado.");
 
         ReproducirSonidoClientRpc();
-        NetworkObject.Despawn();   // desaparece para todos
+        NetworkObject.Despawn();
     }
 
     [ClientRpc]

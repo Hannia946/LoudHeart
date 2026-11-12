@@ -10,37 +10,42 @@ public class ConsumableItem : NetworkBehaviour
     public int cantidad = 1;
     [SerializeField] private AudioClip sonidoRecoleccion;
 
-    private bool recogido = false;
+    private bool recogido = false;       // decide el servidor
+    private float proximoIntento = 0f;   // pausa entre intentos del cliente
 
-    private void OnTriggerEnter(Collider other)
+    // Lo detecta el jugador dueño en su pantalla y se lo pide al servidor.
+    // OnTriggerStay (y no Enter) permite recoger un objeto sobre el que ya
+    // estabas parado cuando empezó la partida.
+    private void OnTriggerStay(Collider other)
     {
-        if (recogido) return;
+        if (!IsSpawned || Time.time < proximoIntento) return;
 
         var inventario = other.GetComponentInParent<PlayerInventoryManager>();
-        if (inventario == null) return;
+        if (inventario == null || !inventario.IsOwner) return;
 
-        // Solo el jugador dueño de este personaje inicia la recolección
-        if (inventario.IsOwner)
-        {
-            recogido = true;
-            RecogerConsumibleServerRpc(inventario.NetworkObjectId);
-        }
+        proximoIntento = Time.time + 0.5f;
+        RecogerConsumibleServerRpc(inventario.NetworkObjectId);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void RecogerConsumibleServerRpc(ulong playerNetworkId)
     {
-        // El servidor localiza al jugador y actualiza su inventario en la red
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerNetworkId, out var playerObject))
-        {
-            var inventario = playerObject.GetComponent<PlayerInventoryManager>();
-            if (inventario != null)
-            {
-                inventario.RecibirConsumible(tipoConsumible, cantidad);
-                ReproducirSonidoClientRpc();
-                NetworkObject.Despawn();
-            }
-        }
+        if (recogido) return;   // otro jugador llegó antes
+
+        if (GestorPartida.Instancia != null && !GestorPartida.Instancia.EnCurso) return;
+
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerNetworkId, out var jugador))
+            return;
+
+        var inventario = jugador.GetComponent<PlayerInventoryManager>();
+        if (inventario == null) return;
+
+        recogido = true;
+        Debug.Log($"[CONSUMIBLE] {tipoConsumible} x{cantidad} recogido por el cliente {inventario.OwnerClientId}.");
+
+        inventario.RecibirConsumible(tipoConsumible, cantidad);
+        ReproducirSonidoClientRpc();
+        NetworkObject.Despawn();
     }
 
     [ClientRpc]

@@ -39,6 +39,7 @@ public class EstadoVitalExplorador : NetworkBehaviour
     private void Update()
     {
         if (!IsSpawned || !IsOwner) return;   // solo el dueño gasta y usa
+        if (GestorPartida.Instancia != null && !GestorPartida.Instancia.EnCurso) return;
 
         ConsumirBateria();
         UsoAutomatico();
@@ -105,6 +106,8 @@ public class EstadoVitalExplorador : NetworkBehaviour
 
     public void RecibirDanoDesdeServidor(float dano)
     {
+        if (vidaActual <= 0f) return;
+
         if (!IsServer) return;
 
         RecibirDanoClientRpc(dano, new ClientRpcParams
@@ -113,6 +116,8 @@ public class EstadoVitalExplorador : NetworkBehaviour
         });
     }
 
+    private bool muerteReportada = false;
+
     [ClientRpc]
     private void RecibirDanoClientRpc(float dano, ClientRpcParams p = default)
     {
@@ -120,7 +125,18 @@ public class EstadoVitalExplorador : NetworkBehaviour
         vidaActual = Mathf.Max(vidaActual - dano, 0f);
         Debug.Log($"[VIDA] Golpe del monstruo: {anterior:F0} → {vidaActual:F0} / {vidaMaxima:F0}");
 
-        if (vidaActual <= 0f)
-            Debug.LogWarning("[VIDA] El jugador se quedó sin vida.");   // pendiente: definir qué pasa
+        if (vidaActual <= 0f && !muerteReportada)
+        {
+            muerteReportada = true;
+            Debug.LogWarning("[VIDA] El jugador se quedó sin vida: derrota del equipo.");
+            ReportarMuerteServerRpc();
+        }
+    }
+
+    [ServerRpc]
+    private void ReportarMuerteServerRpc()
+    {
+        if (GestorPartida.Instancia != null)
+            GestorPartida.Instancia.TerminarPartida(GestorPartida.EstadoPartida.Derrota);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
+using UnityEngine.UI;
+using UnityEngine.InputSystem.UI;
 
 public class PantallaHistoriaController : MonoBehaviour
 {
@@ -31,19 +33,54 @@ public class PantallaHistoriaController : MonoBehaviour
     private string comandosFull = "<color=#00FF00>COMANDOS DE VOZ</color>\n\n<size=120%><color=#00FF00>AVANZA</color></size>\nCamina hacia adelante.\n\n<size=120%><color=#00FF00>ALTO</color></size>\nSe detiene y se queda quieto.\n\n<size=120%><color=#00FF00>TROTA</color></size>\nCorre para escapar del monstruo.";
     private string objetivoFull = "<color=#00FF00>OBJETIVO</color>   Encuentra los 5 juguetes y huye.";
 
+    private TMP_Text etiquetaComenzar;
+    private string textoOriginalComenzar = "";
+    private bool esperandoCompanero = false;
+
     private void Awake()
     {
         PrepararUIYRaycasts();
+
+        if (botonComenzar != null)
+        {
+            etiquetaComenzar = botonComenzar.GetComponentInChildren<TMP_Text>(true);
+            if (etiquetaComenzar != null) textoOriginalComenzar = etiquetaComenzar.text;
+        }
+
         ConectarBotonesSiFaltan();
     }
 
     private void OnEnable()
     {
         IniciarSecuencia();
+        VoiceProcessor.OnComandoDetectado += AlComandoDeVoz;
+    }
+
+    private void OnDisable()
+    {
+        VoiceProcessor.OnComandoDetectado -= AlComandoDeVoz;
+    }
+
+    private void AlComandoDeVoz(string comando)
+    {
+        if (string.IsNullOrWhiteSpace(comando)) return;
+
+        if (comando.ToLower().Trim() == "avanza" && botonComenzar != null
+            && botonComenzar.gameObject.activeInHierarchy && botonComenzar.interactable)
+        {
+            Comenzar();
+        }
     }
 
     private void Update()
     {
+        if (esperandoCompanero && GestorPartida.Instancia != null && GestorPartida.Instancia.EnCurso)
+        {
+            esperandoCompanero = false;
+            gameObject.SetActive(false);   // empezó la partida: cierra la pantalla
+            return;
+        }
+
         // Evita que Jugador_Pruebas bloquee el mouse mientras esta pantalla está abierta
         if (Cursor.lockState != CursorLockMode.None || !Cursor.visible)
         {
@@ -66,7 +103,7 @@ public class PantallaHistoriaController : MonoBehaviour
         {
             GameObject es = new GameObject("EventSystem");
             es.AddComponent<EventSystem>();
-            es.AddComponent<StandaloneInputModule>();
+            es.AddComponent<InputSystemUIInputModule>();
         }
 
         // 3. Desactivar Raycast Target en imágenes decorativas y textos para que no tapen los botones
@@ -103,6 +140,12 @@ public class PantallaHistoriaController : MonoBehaviour
             botonVolverAver.onClick.RemoveAllListeners();
             botonVolverAver.onClick.AddListener(VolverAVer);
         }
+
+        if (botonComenzar != null && botonComenzar.onClick.GetPersistentEventCount() == 0)
+        {
+            botonComenzar.onClick.RemoveAllListeners();
+            botonComenzar.onClick.AddListener(Comenzar);
+        }
     }
 
     public void IniciarSecuencia()
@@ -120,6 +163,8 @@ public class PantallaHistoriaController : MonoBehaviour
         if (botonSaltar != null) botonSaltar.gameObject.SetActive(true);
         if (botonVolverAver != null) botonVolverAver.gameObject.SetActive(false);
         if (botonComenzar != null) botonComenzar.gameObject.SetActive(false);
+        if (botonComenzar != null) botonComenzar.interactable = true;
+        if (etiquetaComenzar != null) etiquetaComenzar.text = textoOriginalComenzar;
 
         // 2. Estado inicial de marcos
         if (marcoComandos != null) marcoComandos.SetActive(false);
@@ -229,5 +274,21 @@ public class PantallaHistoriaController : MonoBehaviour
         if (botonSaltar != null) botonSaltar.gameObject.SetActive(false);
         if (botonVolverAver != null) botonVolverAver.gameObject.SetActive(true);
         if (botonComenzar != null) botonComenzar.gameObject.SetActive(true);
+    }
+
+    public void Comenzar()
+    {
+        if (botonComenzar != null) botonComenzar.interactable = false;
+
+        // Sin red (prueba en el editor): cierra directamente
+        if (GestorPartida.Instancia == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
+        esperandoCompanero = true;
+        if (etiquetaComenzar != null) etiquetaComenzar.text = "ESPERANDO AL COMPAÑERO...";
+        GestorPartida.Instancia.JugadorListoRpc();
     }
 }

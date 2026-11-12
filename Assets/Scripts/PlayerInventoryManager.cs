@@ -47,6 +47,9 @@ public class PlayerInventoryManager : NetworkBehaviour
                 var boost = GetComponent<SpeedBoostEffect>();
                 if (boost != null) boost.ActivarEfectoVelocidad();
                 break;
+            default:
+                Debug.LogWarning($"[Inventario] El tipo '{tipo}' no tiene efecto. Revisa el prefab.");
+                break;
         }
     }
 

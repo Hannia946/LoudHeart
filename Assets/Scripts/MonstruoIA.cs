@@ -65,16 +65,14 @@ public class MonstruoIA : NetworkBehaviour
     private void Update()
     {
         if (!IsServer || !IsSpawned) return;
-
-        if (!agente.isOnNavMesh)
+        
+        if (GestorPartida.Instancia != null && !GestorPartida.Instancia.EnCurso)
         {
-            if (!avisoNavMesh)
-            {
-                avisoNavMesh = true;
-                Debug.LogWarning("[MONSTRUO] No está sobre el NavMesh. Colócalo sobre la zona azul.");
-            }
+            if (agente.isOnNavMesh) agente.isStopped = true;
             return;
         }
+
+        if (agente.isOnNavMesh && agente.isStopped) agente.isStopped = false;
 
         ActualizarRitmos();
 

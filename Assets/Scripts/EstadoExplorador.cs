@@ -28,6 +28,7 @@ public class EstadoExplorador : NetworkBehaviour
 
     private void ProcesarComandoVoz(string comando)
     {
+        if (GestorPartida.Instancia != null && !GestorPartida.Instancia.EnCurso) return;
         if (string.IsNullOrWhiteSpace(comando)) return;
 
         comando = comando.ToLower().Trim();
