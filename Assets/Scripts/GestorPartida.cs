@@ -47,8 +47,12 @@ public class GestorPartida : NetworkBehaviour
 
     public void RegistrarObjetoClave()   // solo servidor
     {
-        if (!IsServer) return;
+        if (!IsServer || !EnCurso) return;
+
         objetosClaveRecolectados.Value++;
+
+        if (objetosClaveRecolectados.Value >= MetaObjetosClave)
+            TerminarPartida(EstadoPartida.Victoria);
     }
 
     public void TerminarPartida(EstadoPartida resultado)   // solo servidor

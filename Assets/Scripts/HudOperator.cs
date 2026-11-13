@@ -9,6 +9,7 @@ public class HudOperador : MonoBehaviour
     [SerializeField] private TMP_Text textoVendas;
     [SerializeField] private TMP_Text textoPilas;
     [SerializeField] private TMP_Text textoObjetosClave;
+    [SerializeField] private DamageOverlay overlay;
 
     [SerializeField] private Color colorNormal = new Color(0.2f, 1f, 0.4f);
     [SerializeField] private Color colorBajo = new Color(1f, 0.3f, 0.3f);
@@ -24,6 +25,9 @@ public class HudOperador : MonoBehaviour
             BuscarJugadorLocal();
             return;
         }
+
+        if (overlay != null)
+            overlay.ActualizarEfectoVida(vital.vidaActual, vital.vidaMaxima);
 
         int vida = Mathf.RoundToInt(vital.vidaActual / vital.vidaMaxima * 100f);
         if (vida != uVida && textoVida != null)
