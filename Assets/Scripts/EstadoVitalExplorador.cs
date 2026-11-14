@@ -39,6 +39,7 @@ public class EstadoVitalExplorador : NetworkBehaviour
     private void Update()
     {
         if (!IsSpawned || !IsOwner) return;   // solo el dueño gasta y usa
+        if (GestorPartida.Instancia != null && !GestorPartida.Instancia.EnCurso) return;
 
         ConsumirBateria();
         UsoAutomatico();
@@ -101,5 +102,41 @@ public class EstadoVitalExplorador : NetworkBehaviour
             luzLinterna.enabled = true;   // por si se había apagado al llegar a 0
 
         Debug.Log($"[BATERÍA] {anterior:F0} → {bateriaActual:F0} / {bateriaMaxima:F0}");
+    }
+
+    public void RecibirDanoDesdeServidor(float dano)
+    {
+        if (vidaActual <= 0f) return;
+
+        if (!IsServer) return;
+
+        RecibirDanoClientRpc(dano, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+        });
+    }
+
+    private bool muerteReportada = false;
+
+    [ClientRpc]
+    private void RecibirDanoClientRpc(float dano, ClientRpcParams p = default)
+    {
+        float anterior = vidaActual;
+        vidaActual = Mathf.Max(vidaActual - dano, 0f);
+        Debug.Log($"[VIDA] Golpe del monstruo: {anterior:F0} → {vidaActual:F0} / {vidaMaxima:F0}");
+
+        if (vidaActual <= 0f && !muerteReportada)
+        {
+            muerteReportada = true;
+            Debug.LogWarning("[VIDA] El jugador se quedó sin vida: derrota del equipo.");
+            ReportarMuerteServerRpc();
+        }
+    }
+
+    [ServerRpc]
+    private void ReportarMuerteServerRpc()
+    {
+        if (GestorPartida.Instancia != null)
+            GestorPartida.Instancia.TerminarPartida(GestorPartida.EstadoPartida.Derrota);
     }
 }

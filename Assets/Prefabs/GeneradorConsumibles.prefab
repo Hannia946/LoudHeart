@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2064457902207197692}
+  - component: {fileID: 561741818391085733}
   - component: {fileID: 1725818181570694557}
   m_Layer: 0
   m_Name: GeneradorConsumibles
@@ -32,6 +33,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &561741818391085733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456969031149641941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 4188596234
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &1725818181570694557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44,6 +70,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4170015165cd7484d8a17aae07bf9375, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GeneradorConsumibles
+  ShowTopMostFoldoutHeaderGroup: 1
   prefabsConsumibles:
   - {fileID: 6193632336301627365, guid: 1bd7b6a4cb1c67b4da86fb236aa45ceb, type: 3}
   - {fileID: 1883590959010484324, guid: 9238e54bb0917604a840cd2161429285, type: 3}
@@ -58,3 +85,4 @@ MonoBehaviour:
     m_Bits: 1
   offsetAltura: 0.8
   radioLibre: 1
+  radioObstaculo: 1.5
