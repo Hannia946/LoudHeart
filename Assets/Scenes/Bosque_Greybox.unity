@@ -299,11 +299,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2474829736064012739, guid: a518b64c7bbbb92499ad6d19789f3b46, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2550005864705732646, guid: a518b64c7bbbb92499ad6d19789f3b46, type: 3}
       propertyPath: m_Name
       value: Bar_Juguetes
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550005864705732646, guid: a518b64c7bbbb92499ad6d19789f3b46, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2636874414694499816, guid: a518b64c7bbbb92499ad6d19789f3b46, type: 3}
       propertyPath: m_text
@@ -473,7 +477,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6188810610703247950, guid: a518b64c7bbbb92499ad6d19789f3b46, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 15.4525
       objectReference: {fileID: 0}
     - target: {fileID: 6188810610703247950, guid: a518b64c7bbbb92499ad6d19789f3b46, type: 3}
       propertyPath: m_AnchoredPosition.y
