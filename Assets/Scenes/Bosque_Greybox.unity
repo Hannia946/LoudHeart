@@ -299,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2474829736064012739, guid: a518b64c7bbbb92499ad6d19789f3b46, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2550005864705732646, guid: a518b64c7bbbb92499ad6d19789f3b46, type: 3}
       propertyPath: m_Name
@@ -1073,6 +1073,22 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
+      propertyPath: radioMerodeo
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
+      propertyPath: distanciaRetirada
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
+      propertyPath: enfriamientoAtaque
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
+      propertyPath: factorVelocidadPatrulla
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
       propertyPath: velocidadPorFase.Array.size
       value: 5
       objectReference: {fileID: 0}
@@ -1117,16 +1133,24 @@ PrefabInstance:
       value: 26
       objectReference: {fileID: 0}
     - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
-      propertyPath: 'tiempoRetiradaPorFase.Array.data[2]'
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
-      propertyPath: 'tiempoRetiradaPorFase.Array.data[3]'
+      propertyPath: 'tiempoRetiradaPorFase.Array.data[0]'
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
-      propertyPath: 'tiempoRetiradaPorFase.Array.data[4]'
+      propertyPath: 'tiempoRetiradaPorFase.Array.data[1]'
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
+      propertyPath: 'tiempoRetiradaPorFase.Array.data[2]'
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
+      propertyPath: 'tiempoRetiradaPorFase.Array.data[3]'
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7226063909086307758, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
+      propertyPath: 'tiempoRetiradaPorFase.Array.data[4]'
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5287604246148171480, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -4962,7 +4986,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1725818181570694557, guid: c16de47cc7b263d4b96110f8c6c5f46c, type: 3}
       propertyPath: cantidadPorTipo
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2064457902207197692, guid: c16de47cc7b263d4b96110f8c6c5f46c, type: 3}
       propertyPath: m_LocalPosition.x
