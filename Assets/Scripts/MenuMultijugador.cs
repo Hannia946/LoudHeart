@@ -8,12 +8,14 @@ public class MenuMultijugador : MonoBehaviour
 {
     [SerializeField] private TMP_InputField campoIP;
     [SerializeField] private TMP_Text textoEstado;
+    [SerializeField] private TMP_Text textoIPLocal;
     [SerializeField] private string escenaJuego = "Bosque_Greybox";
     [SerializeField] private ushort puerto = 7777;
 
     private void Start()
     {
         NetworkManager.Singleton.OnClientDisconnectCallback += AlDesconectarse;
+        if (textoIPLocal != null) textoIPLocal.text = "Tu IP: " + ObtenerIPLocal();
     }
 
     private void OnDestroy()
@@ -26,6 +28,9 @@ public class MenuMultijugador : MonoBehaviour
     public void Hostear()
     {
         var nm = NetworkManager.Singleton;
+
+        var utp = nm.GetComponent<UnityTransport>();
+        utp.SetConnectionData("127.0.0.1", puerto, "0.0.0.0");
 
         if (!nm.StartHost())
         {
@@ -56,5 +61,28 @@ public class MenuMultijugador : MonoBehaviour
     {
         if (!NetworkManager.Singleton.IsServer)
             textoEstado.text = "No se pudo conectar o se perdió la conexión.";
+    }
+
+    private static string ObtenerIPLocal()
+    {
+        try
+        {
+            // Pregunta al sistema qué interfaz usaría para salir a la red (no envía datos)
+            using (var socket = new System.Net.Sockets.Socket(
+                System.Net.Sockets.AddressFamily.InterNetwork,
+                System.Net.Sockets.SocketType.Dgram, 0))
+            {
+                socket.Connect("8.8.8.8", 65530);
+                return ((System.Net.IPEndPoint)socket.LocalEndPoint).Address.ToString();
+            }
+        }
+        catch
+        {
+            foreach (var ip in System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList)
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork &&
+                    !System.Net.IPAddress.IsLoopback(ip))
+                    return ip.ToString();
+            return "no disponible";
+        }
     }
 }
