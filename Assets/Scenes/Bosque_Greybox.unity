@@ -4986,7 +4986,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1725818181570694557, guid: c16de47cc7b263d4b96110f8c6c5f46c, type: 3}
       propertyPath: cantidadPorTipo
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1725818181570694557, guid: c16de47cc7b263d4b96110f8c6c5f46c, type: 3}
       propertyPath: prefabsConsumibles.Array.size
