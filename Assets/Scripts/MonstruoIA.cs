@@ -36,6 +36,14 @@ public class MonstruoIA : NetworkBehaviour
     [SerializeField] private float duracionRetiradaPorLuz = 3f;
     [SerializeField] private float inmunidadLuz = 6f;
 
+    [Header("Reataque tras retirarse")]
+    [SerializeField] private float tiempoMemoria = 12f;         // sigue acosando al último objetivo aunque se quede quieto
+    [SerializeField] private float radioReataque = 45f;         // si al terminar la retirada el jugador está a menos de esto, vuelve a atacar
+    [SerializeField] private float radioDeteccionMinimo = 6f;   // a esta distancia te nota aunque estés quieto
+
+    private NetworkObject ultimoObjetivo;
+    private float memoriaHasta;
+
     private class DatosRitmo
     {
         public Vector3 ultimaPos;
@@ -126,10 +134,12 @@ public class MonstruoIA : NetworkBehaviour
             return;
         }
 
-        float radioPerdida = Valor(radioDeteccionPorFase, fase) * FactorRitmo(objetivo.OwnerClientId) * factorRadioPerdida;
+        float radio = Mathf.Max(Valor(radioDeteccionPorFase, fase) * FactorRitmo(objetivo.OwnerClientId), radioDeteccionMinimo);
+        float radioPerdida = radio * factorRadioPerdida;
         float dist = DistanciaPlana(transform.position, objetivo.transform.position);
 
-        if (dist > radioPerdida)
+        // Mientras dura la memoria no pierde el interés, aunque el jugador se quede quieto
+        if (dist > radioPerdida && Time.time >= memoriaHasta)
         {
             tiempoSinDetectar += Time.deltaTime;
             if (tiempoSinDetectar >= tiempoPerderInteres)
@@ -155,7 +165,17 @@ public class MonstruoIA : NetworkBehaviour
     {
         agente.speed = velocidad;
 
-        if (Time.time >= finRetirada)
+        if (Time.time < finRetirada) return;
+
+        // Vuelve al ataque si el último objetivo sigue a su alcance
+        if (ultimoObjetivo != null &&
+            DistanciaPlana(transform.position, ultimoObjetivo.transform.position) <= radioReataque)
+        {
+            objetivo = ultimoObjetivo;
+            tiempoSinDetectar = 0f;
+            CambiarEstado(Estado.Persecucion);
+        }
+        else
         {
             proximoCambioPatrulla = 0f;
             CambiarEstado(Estado.Patrulla);
@@ -176,6 +196,8 @@ public class MonstruoIA : NetworkBehaviour
 
     private void IniciarRetirada(float duracion)
     {
+        ultimoObjetivo = objetivo != null ? objetivo : JugadorMasCercano();
+        memoriaHasta = Time.time + duracion + tiempoMemoria;
         finRetirada = Time.time + duracion;
         objetivo = null;
         CambiarEstado(Estado.Retirada);
@@ -260,7 +282,7 @@ public class MonstruoIA : NetworkBehaviour
             if (obj == null) continue;
 
             float dist = DistanciaPlana(transform.position, obj.transform.position);
-            float radio = radioBase * FactorRitmo(cliente.ClientId);
+            float radio = Mathf.Max(radioBase * FactorRitmo(cliente.ClientId), radioDeteccionMinimo);
 
             if (dist <= radio && dist < mejorDist)
             {
