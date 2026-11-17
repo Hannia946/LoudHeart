@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 3896257672084482576}
   - component: {fileID: 3176624427610372542}
   - component: {fileID: 8874014204930355781}
+  - component: {fileID: 622742946939241597}
   m_Layer: 0
   m_Name: Consumible_Pila
   m_TagString: Untagged
@@ -190,7 +191,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   tipoConsumible: 1
   cantidad: 1
-  sonidoRecoleccion: {fileID: 0}
+  sonidoRecoleccion: {fileID: 8300000, guid: 7c15eeeba9b92c24da3fc54f79f23ed0, type: 3}
 --- !u!108 &3896257672084482576
 Light:
   m_ObjectHideFlags: 0
@@ -306,3 +307,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &622742946939241597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5853394621244040759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceeee818d3a56754f9db2cedfc58eb5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SonidoProximidadObjeto
+  sonidoCercania: {fileID: 8300000, guid: 1f18d9421c70f284d94ca7dc08843855, type: 3}
+  volumen: 0.45
+  radioDeteccion: 8
+  distanciaMinima: 1.5
+  intervaloSonido: 1.5

@@ -26,19 +26,22 @@ public class AudioAmbiente3D : MonoBehaviour
     [Range(0f, 1f)]
     public float volumenCrujido = 0.80f;
 
-    [Header("DISTANCIA AMBIENTE")]
-    [Min(0.1f)]
-    public float distanciaMinima = 5f;
 
-    [Min(1f)]
-    public float distanciaMaxima = 30f;
+    // ============================================================
+    // AGUA LOCALIZADA
+    // ============================================================
 
     [Header("DISTANCIA DEL AGUA")]
     [Min(0.1f)]
-    public float distanciaMinimaAgua = 3f;
+    public float distanciaMinimaAgua = 25f;
 
     [Min(1f)]
-    public float distanciaMaximaAgua = 18f;
+    public float distanciaMaximaAgua = 60f;
+
+
+    // ============================================================
+    // SONIDOS OCASIONALES
+    // ============================================================
 
     [Header("BÚHO OCASIONAL")]
     public bool activarBuho = true;
@@ -49,6 +52,7 @@ public class AudioAmbiente3D : MonoBehaviour
     [Min(1f)]
     public float tiempoMaximoBuho = 40f;
 
+
     [Header("RÁFAGA OCASIONAL")]
     public bool activarRafaga = true;
 
@@ -57,6 +61,7 @@ public class AudioAmbiente3D : MonoBehaviour
 
     [Min(1f)]
     public float tiempoMaximoRafaga = 25f;
+
 
     [Header("CRUJIDOS OCASIONALES")]
     public bool activarCrujidos = true;
@@ -67,57 +72,85 @@ public class AudioAmbiente3D : MonoBehaviour
     [Min(1f)]
     public float tiempoMaximoCrujido = 20f;
 
+
+    // ============================================================
+    // AUDIO SOURCES
+    // ============================================================
+
     private AudioSource fuenteViento;
     private AudioSource fuenteBuho;
     private AudioSource fuenteRafaga;
     private AudioSource fuenteAgua;
     private AudioSource fuenteCrujido;
 
+
+    // ============================================================
+    // AWAKE
+    // ============================================================
+
     private void Awake()
     {
+        // ========================================================
+        // AMBIENTE GENERAL DEL BOSQUE
+        // ========================================================
+        //
+        // Estos sonidos son 2D para que el bosque nunca quede
+        // completamente en silencio, incluso en los extremos
+        // del mapa.
+        // ========================================================
+
+
         // VIENTO - CONTINUO
         if (sonidoViento != null)
         {
-            fuenteViento = CrearAudioSource(
+            fuenteViento = CrearAudioSourceGlobal(
                 sonidoViento,
                 volumenViento,
-                true,
-                AudioRolloffMode.Logarithmic,
-                distanciaMinima,
-                distanciaMaxima
+                true
             );
         }
+
 
         // BÚHO - OCASIONAL
         if (sonidoBuho != null)
         {
-            fuenteBuho = CrearAudioSource(
+            fuenteBuho = CrearAudioSourceGlobal(
                 sonidoBuho,
                 volumenBuho,
-                false,
-                AudioRolloffMode.Logarithmic,
-                distanciaMinima,
-                distanciaMaxima
+                false
             );
         }
+
 
         // RÁFAGA - OCASIONAL
         if (sonidoRafaga != null)
         {
-            fuenteRafaga = CrearAudioSource(
+            fuenteRafaga = CrearAudioSourceGlobal(
                 sonidoRafaga,
                 volumenRafaga,
-                false,
-                AudioRolloffMode.Logarithmic,
-                distanciaMinima,
-                distanciaMaxima
+                false
             );
         }
 
+
+        // CRUJIDO - OCASIONAL
+        if (sonidoCrujido != null)
+        {
+            fuenteCrujido = CrearAudioSourceGlobal(
+                sonidoCrujido,
+                volumenCrujido,
+                false
+            );
+        }
+
+
+        // ========================================================
         // AGUA - CONTINUA Y LOCALIZADA
+        // ========================================================
+
         if (sonidoAgua != null)
         {
-            fuenteAgua = CrearAudioSource(
+            fuenteAgua = CrearAudioSource3D(
                 sonidoAgua,
                 volumenAgua,
                 true,
@@ -126,20 +159,12 @@ public class AudioAmbiente3D : MonoBehaviour
                 distanciaMaximaAgua
             );
         }
-
-        // CRUJIDO - OCASIONAL
-        if (sonidoCrujido != null)
-        {
-            fuenteCrujido = CrearAudioSource(
-                sonidoCrujido,
-                volumenCrujido,
-                false,
-                AudioRolloffMode.Logarithmic,
-                distanciaMinima,
-                distanciaMaxima
-            );
-        }
     }
+
+
+    // ============================================================
+    // START
+    // ============================================================
 
     private void Start()
     {
@@ -149,9 +174,10 @@ public class AudioAmbiente3D : MonoBehaviour
             fuenteViento.Play();
 
             Debug.Log(
-                "[AUDIO BOSQUE] Viento iniciado."
+                "[AUDIO BOSQUE] Ambiente global iniciado."
             );
         }
+
 
         // AGUA
         if (fuenteAgua != null)
@@ -163,27 +189,36 @@ public class AudioAmbiente3D : MonoBehaviour
             );
         }
 
+
         // BÚHO
-        if (activarBuho &&
-            fuenteBuho != null)
+        if (
+            activarBuho &&
+            fuenteBuho != null
+        )
         {
             StartCoroutine(
                 ReproducirBuhoAleatorio()
             );
         }
 
+
         // RÁFAGA
-        if (activarRafaga &&
-            fuenteRafaga != null)
+        if (
+            activarRafaga &&
+            fuenteRafaga != null
+        )
         {
             StartCoroutine(
                 ReproducirRafagaAleatoria()
             );
         }
 
+
         // CRUJIDOS
-        if (activarCrujidos &&
-            fuenteCrujido != null)
+        if (
+            activarCrujidos &&
+            fuenteCrujido != null
+        )
         {
             StartCoroutine(
                 ReproducirCrujidosAleatorios()
@@ -191,38 +226,114 @@ public class AudioAmbiente3D : MonoBehaviour
         }
     }
 
+
+    // ============================================================
+    // CREAR AUDIO SOURCE GLOBAL / 2D
+    // ============================================================
+
+    private AudioSource CrearAudioSourceGlobal(
+        AudioClip clip,
+        float volumen,
+        bool loop
+    )
+    {
+        AudioSource fuente =
+            gameObject.AddComponent<AudioSource>();
+
+
+        fuente.clip =
+            clip;
+
+
+        fuente.volume =
+            volumen;
+
+
+        fuente.playOnAwake =
+            false;
+
+
+        fuente.loop =
+            loop;
+
+
+        // ========================================================
+        // 0 = completamente 2D
+        // Se escucha igual en cualquier punto del mapa.
+        // ========================================================
+
+        fuente.spatialBlend =
+            0f;
+
+
+        fuente.dopplerLevel =
+            0f;
+
+
+        return fuente;
+    }
+
+
     // ============================================================
     // CREAR AUDIO SOURCE 3D
     // ============================================================
 
-    private AudioSource CrearAudioSource(
+    private AudioSource CrearAudioSource3D(
         AudioClip clip,
         float volumen,
         bool loop,
         AudioRolloffMode rolloff,
         float distanciaMin,
-        float distanciaMax)
+        float distanciaMax
+    )
     {
         AudioSource fuente =
             gameObject.AddComponent<AudioSource>();
 
-        fuente.clip = clip;
-        fuente.volume = volumen;
 
-        fuente.playOnAwake = false;
-        fuente.loop = loop;
+        fuente.clip =
+            clip;
 
-        fuente.spatialBlend = 1f;
 
-        fuente.rolloffMode = rolloff;
+        fuente.volume =
+            volumen;
 
-        fuente.minDistance = distanciaMin;
-        fuente.maxDistance = distanciaMax;
 
-        fuente.dopplerLevel = 0f;
+        fuente.playOnAwake =
+            false;
+
+
+        fuente.loop =
+            loop;
+
+
+        fuente.spatialBlend =
+            1f;
+
+
+        fuente.rolloffMode =
+            rolloff;
+
+
+        fuente.minDistance =
+            distanciaMin;
+
+
+        fuente.maxDistance =
+            distanciaMax;
+
+
+        fuente.dopplerLevel =
+            0f;
+
+
+        fuente.spread =
+            0f;
+
 
         return fuente;
     }
+
 
     // ============================================================
     // BÚHO
@@ -232,21 +343,27 @@ public class AudioAmbiente3D : MonoBehaviour
     {
         while (true)
         {
-            float espera = Random.Range(
-                tiempoMinimoBuho,
-                tiempoMaximoBuho
-            );
+            float espera =
+                Random.Range(
+                    tiempoMinimoBuho,
+                    tiempoMaximoBuho
+                );
+
 
             yield return new WaitForSeconds(
                 espera
             );
 
-            if (fuenteBuho != null &&
-                sonidoBuho != null)
+
+            if (
+                fuenteBuho != null &&
+                sonidoBuho != null
+            )
             {
                 fuenteBuho.PlayOneShot(
                     sonidoBuho
                 );
+
 
                 Debug.Log(
                     "[AUDIO BOSQUE] Búho reproducido."
@@ -254,6 +371,7 @@ public class AudioAmbiente3D : MonoBehaviour
             }
         }
     }
+
 
     // ============================================================
     // RÁFAGA
@@ -263,21 +381,27 @@ public class AudioAmbiente3D : MonoBehaviour
     {
         while (true)
         {
-            float espera = Random.Range(
-                tiempoMinimoRafaga,
-                tiempoMaximoRafaga
-            );
+            float espera =
+                Random.Range(
+                    tiempoMinimoRafaga,
+                    tiempoMaximoRafaga
+                );
+
 
             yield return new WaitForSeconds(
                 espera
             );
 
-            if (fuenteRafaga != null &&
-                sonidoRafaga != null)
+
+            if (
+                fuenteRafaga != null &&
+                sonidoRafaga != null
+            )
             {
                 fuenteRafaga.PlayOneShot(
                     sonidoRafaga
                 );
+
 
                 Debug.Log(
                     "[AUDIO BOSQUE] Ráfaga reproducida."
@@ -285,6 +409,7 @@ public class AudioAmbiente3D : MonoBehaviour
             }
         }
     }
+
 
     // ============================================================
     // CRUJIDOS
@@ -294,21 +419,27 @@ public class AudioAmbiente3D : MonoBehaviour
     {
         while (true)
         {
-            float espera = Random.Range(
-                tiempoMinimoCrujido,
-                tiempoMaximoCrujido
-            );
+            float espera =
+                Random.Range(
+                    tiempoMinimoCrujido,
+                    tiempoMaximoCrujido
+                );
+
 
             yield return new WaitForSeconds(
                 espera
             );
 
-            if (fuenteCrujido != null &&
-                sonidoCrujido != null)
+
+            if (
+                fuenteCrujido != null &&
+                sonidoCrujido != null
+            )
             {
                 fuenteCrujido.PlayOneShot(
                     sonidoCrujido
                 );
+
 
                 Debug.Log(
                     "[AUDIO BOSQUE] Crujido reproducido."
@@ -316,6 +447,7 @@ public class AudioAmbiente3D : MonoBehaviour
             }
         }
     }
+
 
     // ============================================================
     // DETENER TODO
@@ -325,17 +457,22 @@ public class AudioAmbiente3D : MonoBehaviour
     {
         StopAllCoroutines();
 
+
         if (fuenteViento != null)
             fuenteViento.Stop();
+
 
         if (fuenteBuho != null)
             fuenteBuho.Stop();
 
+
         if (fuenteRafaga != null)
             fuenteRafaga.Stop();
 
+
         if (fuenteAgua != null)
             fuenteAgua.Stop();
+
 
         if (fuenteCrujido != null)
             fuenteCrujido.Stop();
