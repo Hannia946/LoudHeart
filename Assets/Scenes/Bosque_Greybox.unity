@@ -5104,6 +5104,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2862561065474780481, guid: 72fb6c024b0ad064eae8409d334d01cf, type: 3}
   m_PrefabInstance: {fileID: 1568973517}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1574664071 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4632570953737358071, guid: a518b64c7bbbb92499ad6d19789f3b46, type: 3}
+  m_PrefabInstance: {fileID: 83138273}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1576298531
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5516,7 +5527,7 @@ MonoBehaviour:
   textoBateria: {fileID: 1768013599}
   textoVendas: {fileID: 1768013597}
   textoPilas: {fileID: 1768013598}
-  textoObjetosClave: {fileID: 0}
+  textoObjetosClave: {fileID: 1574664071}
   overlay: {fileID: 1879351144}
   colorNormal: {r: 0.2, g: 1, b: 0.4, a: 1}
   colorBajo: {r: 1, g: 0.3, b: 0.3, a: 1}
