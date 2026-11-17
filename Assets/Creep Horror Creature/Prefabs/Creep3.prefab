@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3346084621
+  GlobalObjectIdHash: 1697424150
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -204,6 +204,25 @@ MonoBehaviour:
   enfriamientoAtaque: 1.5
   duracionRetiradaPorLuz: 3
   inmunidadLuz: 6
+  tiempoMemoria: 12
+  radioReataque: 45
+  radioDeteccionMinimo: 6
+  sonidoRespiracion: {fileID: 8300000, guid: a21b8aaa7a8166e4a9ce87a00b23b287, type: 3}
+  sonidoPasos: {fileID: 8300000, guid: f26b2b33927593643a29992efc95c4a8, type: 3}
+  sonidoGrunido: {fileID: 8300000, guid: faa3e4c73c1a69044a14d14eff8447ee, type: 3}
+  sonidoDeteccion: {fileID: 8300000, guid: 8803e3d86036d6348a4922edb9f040f5, type: 3}
+  sonidoPersecucion: {fileID: 8300000, guid: cefce89572c28284aba25bec2668600b, type: 3}
+  sonidoAtaque: {fileID: 8300000, guid: 02930d92a066851468bc2becaa1e1557, type: 3}
+  volumenRespiracion: 0.75
+  volumenPasos: 0.9
+  volumenGrunido: 0.85
+  volumenDeteccion: 0.8
+  volumenPersecucion: 0.65
+  volumenAtaque: 1
+  distanciaMinimaAudio: 2
+  distanciaMaximaAudio: 25
+  intervaloGrunidoMin: 8
+  intervaloGrunidoMax: 16
 --- !u!1001 &6899769093140065942
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -5572836490683150629}
   - component: {fileID: 394494308686178070}
   - component: {fileID: 4722592995699457150}
+  - component: {fileID: -6462752926002766315}
   m_Layer: 0
   m_Name: Canicas
   m_TagString: Untagged
@@ -127,7 +128,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   nombreObjetoClave: Canicas
   idObjeto: 0
-  sonidoRecoleccionUnico: {fileID: 0}
+  sonidoRecoleccionUnico: {fileID: 8300000, guid: 7c15eeeba9b92c24da3fc54f79f23ed0, type: 3}
   outlineComponent: {fileID: 0}
 --- !u!135 &-5572836490683150629
 SphereCollider:
@@ -244,6 +245,25 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &-6462752926002766315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7083628714115117328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceeee818d3a56754f9db2cedfc58eb5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SonidoProximidadObjeto
+  sonidoCercania: {fileID: 8300000, guid: 1f18d9421c70f284d94ca7dc08843855, type: 3}
+  radioDeteccion: 15
+  distanciaMinima: 1.5
+  volumenLejos: 0.2
+  volumenCerca: 0.75
+  intervaloLejos: 1.8
+  intervaloCerca: 0.35
 --- !u!1001 &1892865129689025631
 PrefabInstance:
   m_ObjectHideFlags: 0
